@@ -75,22 +75,19 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
       <div
-        className="relative w-full max-w-md"
+        className="relative w-full max-w-md bg-elevated border border-border-default rounded-xl"
         onClick={e => e.stopPropagation()}
         style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--r-xl)',
           boxShadow: 'var(--shadow-elevated)',
         }}
       >
         <div className="p-5">
           {/* ヘッダー */}
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="text-base font-bold text-primary">
               {driverName}さんにLINE送信
             </h3>
-            <button onClick={onClose} className="p-1 cursor-pointer" style={{ color: 'var(--text-muted)' }}>
+            <button onClick={onClose} className="p-1 cursor-pointer text-muted">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
@@ -103,10 +100,8 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
               <button
                 key={key}
                 onClick={() => handleModeChange(key)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium cursor-pointer transition-all"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium cursor-pointer transition-all rounded-md ${mode === key ? 'bg-surface' : 'bg-transparent'}`}
                 style={{
-                  borderRadius: 'var(--r-md)',
-                  background: mode === key ? 'var(--bg-surface)' : 'transparent',
                   color: mode === key ? config.color : 'var(--text-muted)',
                   border: mode === key ? `1px solid ${config.color}` : '1px solid var(--border-subtle)',
                 }}
@@ -118,25 +113,24 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
           </div>
 
           {/* モード説明 */}
-          <p className="text-[10px] mb-3 px-1" style={{ color: 'var(--text-disabled)' }}>
+          <p className="text-[10px] mb-3 px-1 text-disabled">
             {mode === 'numbers' && '業績データに基づく数字のフィードバック。具体的な件数や売上の変動を根拠にしたメッセージ。'}
             {mode === 'mental' && '心理的安全性を重視したメンタルケアメッセージ。稼働状況や休息への配慮を含む。'}
             {mode === 'free' && '自由にメッセージを作成・編集して送信。AIによる自動生成も利用可能。'}
           </p>
 
-          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs mb-3 text-muted">
             状況: {context}
           </p>
 
           {sent ? (
             <div className="text-center py-8">
-              <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full"
-                style={{ background: 'var(--positive-soft)' }}>
+              <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full bg-positive-soft">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M5 13l4 4L19 7" stroke="var(--positive)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <p className="text-sm font-semibold" style={{ color: 'var(--positive)' }}>送信完了</p>
+              <p className="text-sm font-semibold text-positive">送信完了</p>
             </div>
           ) : (
             <>
@@ -145,13 +139,8 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
                 onChange={e => setMessage(e.target.value)}
                 rows={5}
                 disabled={generating}
-                className="w-full p-3 text-sm resize-none"
+                className="w-full p-3 text-sm resize-none bg-surface border border-border-default rounded-md text-primary outline-none"
                 style={{
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: 'var(--r-md)',
-                  color: 'var(--text-primary)',
-                  outline: 'none',
                   opacity: generating ? 0.5 : 1,
                 }}
                 placeholder={generating ? 'AIがメッセージを生成中...' : 'メッセージを入力'}
@@ -161,12 +150,8 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
                 <button
                   onClick={() => generateMessage(mode)}
                   disabled={generating}
-                  className="text-xs px-3 py-2 cursor-pointer transition-colors"
+                  className="text-xs px-3 py-2 cursor-pointer transition-colors bg-surface text-secondary border border-border-default rounded-sm"
                   style={{
-                    background: 'var(--bg-surface)',
-                    color: 'var(--text-secondary)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: 'var(--r-sm)',
                     opacity: generating ? 0.5 : 1,
                   }}
                 >
@@ -176,12 +161,8 @@ export function SendMessageModal({ driverName, userId, context, onClose }: SendM
                 <button
                   onClick={sendMessage}
                   disabled={loading || !message.trim() || generating}
-                  className="text-xs px-4 py-2 font-semibold cursor-pointer transition-colors"
+                  className={`text-xs px-4 py-2 font-semibold cursor-pointer transition-colors text-primary rounded-sm border-0 ${loading || !message.trim() || generating ? 'bg-disabled' : 'bg-crimson'}`}
                   style={{
-                    background: loading || !message.trim() || generating ? 'var(--text-disabled)' : 'var(--brand-crimson)',
-                    color: 'var(--text-primary)',
-                    borderRadius: 'var(--r-sm)',
-                    border: 'none',
                     minHeight: '40px',
                   }}
                 >

@@ -97,6 +97,19 @@ describe('classify', () => {
     });
   });
 
+  // === recruitment ===
+  describe('recruitment', () => {
+    it.each([
+      '応募したいです',
+      '求人を見ました',
+      '働きたいです',
+      'ドライバー希望です',
+      '募集を見て連絡しました',
+    ])('"%s" → recruitment', (text) => {
+      expect(classify(text).scenario).toBe('recruitment');
+    });
+  });
+
   // === unknown ===
   describe('unknown', () => {
     it.each([

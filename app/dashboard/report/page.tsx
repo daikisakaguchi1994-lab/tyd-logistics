@@ -122,27 +122,21 @@ export default function ReportPage() {
       {/* コントロール */}
       <div className="flex items-center justify-between flex-wrap gap-3 print-hide">
         <div>
-          <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>経営レポート</h1>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>経営数値レポートの生成・PDF保存</p>
+          <h1 className="text-lg font-bold text-primary">経営レポート</h1>
+          <p className="text-xs mt-1 text-muted">経営数値レポートの生成・PDF保存</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)', padding: '2px' }}>
+          <div className="flex bg-elevated rounded-md" style={{ padding: '2px' }}>
             {(['weekly', 'monthly'] as const).map(t => (
               <button key={t} onClick={() => setReportType(t)}
-                className="text-xs px-3 py-1.5 cursor-pointer transition-colors"
-                style={{
-                  borderRadius: 'var(--r-sm)', border: 'none',
-                  background: reportType === t ? 'var(--brand-crimson)' : 'transparent',
-                  color: reportType === t ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  fontWeight: reportType === t ? 600 : 400,
-                }}>
+                className={`text-xs px-3 py-1.5 cursor-pointer transition-colors rounded-sm border-0 ${reportType === t ? 'bg-crimson text-primary font-semibold' : 'bg-transparent text-secondary font-normal'}`}>
                 {t === 'weekly' ? '週次' : '月次'}
               </button>
             ))}
           </div>
           <button onClick={handlePrint}
-            className="text-xs px-4 py-2 font-semibold cursor-pointer flex items-center gap-2"
-            style={{ background: 'var(--brand-crimson)', color: 'var(--text-primary)', borderRadius: 'var(--r-md)', border: 'none', minHeight: '40px' }}>
+            className="text-xs px-4 py-2 font-semibold cursor-pointer flex items-center gap-2 bg-crimson text-primary rounded-md border-0"
+            style={{ minHeight: '40px' }}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M7 1v8M3.5 5.5L7 9l3.5-3.5M2 11h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -158,20 +152,20 @@ export default function ReportPage() {
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <div className="w-8 h-8 flex items-center justify-center text-sm font-bold"
-                  style={{ background: 'var(--brand-crimson)', borderRadius: 'var(--r-sm)', color: 'white' }}>T</div>
+                <div className="w-8 h-8 flex items-center justify-center text-sm font-bold bg-crimson rounded-sm"
+                  style={{ color: 'white' }}>T</div>
                 <div>
-                  <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TYD Logistics</h2>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{isWeekly ? '週次' : '月次'}経営報告書</p>
+                  <h2 className="text-lg font-bold text-primary">TYD Logistics</h2>
+                  <p className="text-xs text-muted">{isWeekly ? '週次' : '月次'}経営報告書</p>
                 </div>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs text-muted">
                 対象: {isWeekly ? `${weekLabel}週` : `${last4Weeks[0].week}〜${last4Weeks[last4Weeks.length - 1].week}`}
               </p>
-              <p className="text-xs" style={{ color: 'var(--text-disabled)' }}>作成日: {dateStr}</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>稼働: <span className="num font-bold" style={{ color: 'var(--text-primary)' }}>{PLAYERS.length}名</span></p>
+              <p className="text-xs text-disabled">作成日: {dateStr}</p>
+              <p className="text-xs mt-1 text-muted">稼働: <span className="num font-bold text-primary">{PLAYERS.length}名</span></p>
             </div>
           </div>
         </div>
@@ -187,9 +181,9 @@ export default function ReportPage() {
             { label: '人件費率', value: `${laborCostRatio}%`, signal: null, color: laborCostRatio <= 90 ? 'var(--text-primary)' : 'var(--negative)' },
           ].map(kpi => (
             <div key={kpi.label} className="card p-4">
-              <p className="text-[10px] font-medium mb-1.5 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{kpi.label}</p>
+              <p className="text-[10px] font-medium mb-1.5 uppercase tracking-wider text-muted">{kpi.label}</p>
               <p className="num text-xl font-bold" style={{ color: kpi.color }}>
-                {kpi.value}{kpi.unit ? <span className="text-xs font-normal ml-0.5" style={{ color: 'var(--text-muted)' }}>{kpi.unit}</span> : null}
+                {kpi.value}{kpi.unit ? <span className="text-xs font-normal ml-0.5 text-muted">{kpi.unit}</span> : null}
               </p>
               {kpi.signal !== null && <div className="mt-1"><Signal value={kpi.signal} /></div>}
               {kpi.gauge !== undefined && <ProfitGauge rate={kpi.gauge} />}
@@ -200,15 +194,14 @@ export default function ReportPage() {
         {/* AI Insights — McKinsey風 */}
         <div className="card p-5">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 flex items-center justify-center text-[10px] font-bold rounded-full"
-              style={{ background: 'var(--brand-gold-soft)', color: 'var(--brand-gold)' }}>AI</div>
-            <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>AI 経営インサイト</h3>
+            <div className="w-6 h-6 flex items-center justify-center text-[10px] font-bold rounded-full bg-gold-soft text-gold">AI</div>
+            <h3 className="text-sm font-bold text-primary">AI 経営インサイト</h3>
           </div>
           <div className="space-y-2">
             {generateInsights().map((insight, i) => (
-              <div key={i} className="flex items-start gap-2.5 p-2.5" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
+              <div key={i} className="flex items-start gap-2.5 p-2.5 bg-elevated rounded-md">
                 <div className="w-1 self-stretch rounded-full flex-shrink-0 mt-0.5" style={{ background: i === 0 ? 'var(--brand-crimson)' : 'var(--brand-gold)' }} />
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{insight}</p>
+                <p className="text-xs leading-relaxed text-secondary">{insight}</p>
               </div>
             ))}
           </div>
@@ -219,19 +212,19 @@ export default function ReportPage() {
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-3">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z" fill="#D4A437"/></svg>
-              <h3 className="text-sm font-bold" style={{ color: 'var(--brand-gold)' }}>トップパフォーマー</h3>
+              <h3 className="text-sm font-bold text-gold">トップパフォーマー</h3>
             </div>
             {top3.map((d, i) => (
-              <div key={d.name} className="flex items-center justify-between py-2" style={{ borderBottom: i < 2 ? '1px solid var(--border-subtle)' : 'none' }}>
+              <div key={d.name} className={`flex items-center justify-between py-2 ${i < 2 ? 'border-b border-b-border-subtle' : ''}`}>
                 <div className="flex items-center gap-2.5">
                   <span className="num text-sm font-bold w-5 text-center" style={{ color: i === 0 ? '#D4A437' : i === 1 ? '#C0C0C0' : '#CD7F32' }}>{i + 1}</span>
                   <div>
-                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{d.name}</span>
-                    <span className="text-xs ml-1.5" style={{ color: 'var(--text-disabled)' }}>日平均{d.dailyAvg}件</span>
+                    <span className="text-sm font-semibold text-primary">{d.name}</span>
+                    <span className="text-xs ml-1.5 text-disabled">日平均{d.dailyAvg}件</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="num text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{d.current.toLocaleString()}</span>
+                  <span className="num text-sm font-bold text-primary">{d.current.toLocaleString()}</span>
                   <Signal value={d.change} />
                 </div>
               </div>
@@ -240,16 +233,16 @@ export default function ReportPage() {
           <div className="card p-4">
             <div className="flex items-center gap-2 mb-3">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 4v3m0 3h.01M2 12h10L7 2 2 12z" stroke="#EF4444" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <h3 className="text-sm font-bold" style={{ color: 'var(--negative)' }}>要注意ドライバー</h3>
+              <h3 className="text-sm font-bold text-negative">要注意ドライバー</h3>
             </div>
             {bottom3.map((d, i) => (
-              <div key={d.name} className="flex items-center justify-between py-2" style={{ borderBottom: i < 2 ? '1px solid var(--border-subtle)' : 'none' }}>
+              <div key={d.name} className={`flex items-center justify-between py-2 ${i < 2 ? 'border-b border-b-border-subtle' : ''}`}>
                 <div>
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{d.name}</span>
-                  <span className="text-xs ml-1.5" style={{ color: 'var(--text-disabled)' }}>{d.character}</span>
+                  <span className="text-sm font-medium text-primary">{d.name}</span>
+                  <span className="text-xs ml-1.5 text-disabled">{d.character}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="num text-xs" style={{ color: 'var(--text-muted)' }}>{d.current.toLocaleString()}件</span>
+                  <span className="num text-xs text-muted">{d.current.toLocaleString()}件</span>
                   <Signal value={d.change} />
                 </div>
               </div>
@@ -259,46 +252,44 @@ export default function ReportPage() {
 
         {/* 詳細テーブル — Notion DB風 */}
         <div className="card p-5">
-          <h3 className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>ドライバー別 実績詳細</h3>
+          <h3 className="text-sm font-bold mb-3 text-primary">ドライバー別 実績詳細</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ borderBottom: '2px solid var(--border-default)' }}>
+                <tr className="border-b-2 border-b-border-default">
                   {['#', '名前', 'タイプ', '件数', '日平均', '前期比', '売上', '報酬', '粗利', '単価'].map(h => (
-                    <th key={h} className={`py-2.5 px-2 text-xs font-medium ${h === '#' || h === '名前' || h === 'タイプ' ? 'text-left' : 'text-right'}`}
-                      style={{ color: 'var(--text-muted)' }}>{h}</th>
+                    <th key={h} className={`py-2.5 px-2 text-xs font-medium text-muted ${h === '#' || h === '名前' || h === 'タイプ' ? 'text-left' : 'text-right'}`}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {drivers.map((d, i) => (
-                  <tr key={d.name} className="transition-colors"
-                    style={{ borderBottom: '1px solid var(--border-subtle)', background: i === 0 ? 'var(--brand-crimson-soft)' : 'transparent' }}>
-                    <td className="py-2.5 px-2 num text-xs" style={{ color: 'var(--text-muted)' }}>{i + 1}</td>
-                    <td className="py-2.5 px-2 font-semibold" style={{ color: 'var(--text-primary)' }}>{d.name}</td>
-                    <td className="py-2.5 px-2 text-xs" style={{ color: 'var(--text-disabled)' }}>{d.character}</td>
-                    <td className="text-right py-2.5 px-2 num font-semibold" style={{ color: 'var(--text-primary)' }}>{d.current.toLocaleString()}</td>
-                    <td className="text-right py-2.5 px-2 num text-xs" style={{ color: 'var(--text-muted)' }}>{d.dailyAvg}</td>
+                  <tr key={d.name} className={`transition-colors border-b border-b-border-subtle ${i === 0 ? 'bg-crimson-soft' : ''}`}>
+                    <td className="py-2.5 px-2 num text-xs text-muted">{i + 1}</td>
+                    <td className="py-2.5 px-2 font-semibold text-primary">{d.name}</td>
+                    <td className="py-2.5 px-2 text-xs text-disabled">{d.character}</td>
+                    <td className="text-right py-2.5 px-2 num font-semibold text-primary">{d.current.toLocaleString()}</td>
+                    <td className="text-right py-2.5 px-2 num text-xs text-muted">{d.dailyAvg}</td>
                     <td className="text-right py-2.5 px-2"><Signal value={d.change} /></td>
-                    <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--text-secondary)' }}>{formatYen(d.revenue)}</td>
-                    <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--brand-crimson)' }}>{formatYen(d.labor)}</td>
+                    <td className="text-right py-2.5 px-2 num text-secondary">{formatYen(d.revenue)}</td>
+                    <td className="text-right py-2.5 px-2 num text-crimson">{formatYen(d.labor)}</td>
                     <td className="text-right py-2.5 px-2 num font-semibold" style={{ color: d.profit >= 0 ? 'var(--positive)' : 'var(--negative)' }}>{formatYen(d.profit)}</td>
-                    <td className="text-right py-2.5 px-2 num text-xs" style={{ color: 'var(--text-muted)' }}>¥{d.rate}</td>
+                    <td className="text-right py-2.5 px-2 num text-xs text-muted">¥{d.rate}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ borderTop: '2px solid var(--border-default)' }}>
+                <tr className="border-t-2 border-t-border-default">
                   <td className="py-2.5 px-2" />
-                  <td className="py-2.5 px-2 font-bold" style={{ color: 'var(--text-primary)' }}>合計</td>
+                  <td className="py-2.5 px-2 font-bold text-primary">合計</td>
                   <td className="py-2.5 px-2" />
-                  <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--text-primary)' }}>{totals.current.toLocaleString()}</td>
-                  <td className="text-right py-2.5 px-2 num text-xs font-bold" style={{ color: 'var(--text-muted)' }}>{Math.round(totals.current / PLAYERS.length / (isWeekly ? 6 : 24))}</td>
+                  <td className="text-right py-2.5 px-2 num font-bold text-primary">{totals.current.toLocaleString()}</td>
+                  <td className="text-right py-2.5 px-2 num text-xs font-bold text-muted">{Math.round(totals.current / PLAYERS.length / (isWeekly ? 6 : 24))}</td>
                   <td className="text-right py-2.5 px-2"><Signal value={totalChange} /></td>
-                  <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--text-primary)' }}>{formatYen(totals.revenue)}</td>
-                  <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--brand-crimson)' }}>{formatYen(totals.labor)}</td>
+                  <td className="text-right py-2.5 px-2 num font-bold text-primary">{formatYen(totals.revenue)}</td>
+                  <td className="text-right py-2.5 px-2 num font-bold text-crimson">{formatYen(totals.labor)}</td>
                   <td className="text-right py-2.5 px-2 num font-bold" style={{ color: totals.profit >= 0 ? 'var(--positive)' : 'var(--negative)' }}>{formatYen(totals.profit)}</td>
-                  <td className="text-right py-2.5 px-2 num text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <td className="text-right py-2.5 px-2 num text-xs text-muted">
                     平均 ¥{Math.round(PLAYERS.reduce((s, p) => s + (driverRates[p.name] ?? 160), 0) / PLAYERS.length)}
                   </td>
                 </tr>
@@ -309,14 +300,13 @@ export default function ReportPage() {
 
         {/* 週次推移 — Stripe Dashboard風 */}
         <div className="card p-5">
-          <h3 className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>直近8週の推移</h3>
+          <h3 className="text-sm font-bold mb-3 text-primary">直近8週の推移</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ borderBottom: '2px solid var(--border-default)' }}>
+                <tr className="border-b-2 border-b-border-default">
                   {['週', '配送件数', '売上', '粗利', '利益率'].map(h => (
-                    <th key={h} className={`py-2 px-2 text-xs font-medium ${h === '週' ? 'text-left' : 'text-right'}`}
-                      style={{ color: 'var(--text-muted)' }}>{h}</th>
+                    <th key={h} className={`py-2 px-2 text-xs font-medium text-muted ${h === '週' ? 'text-left' : 'text-right'}`}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -325,13 +315,10 @@ export default function ReportPage() {
                   const rate = w.revenue > 0 ? Math.round((w.profit / w.revenue) * 1000) / 10 : 0;
                   const isLatest = i === weeklyTrend.length - 1;
                   return (
-                    <tr key={w.week} style={{
-                      borderBottom: '1px solid var(--border-subtle)',
-                      background: isLatest ? 'var(--brand-crimson-soft)' : 'transparent',
-                    }}>
-                      <td className="py-2 px-2 text-xs" style={{ color: 'var(--text-secondary)', fontWeight: isLatest ? 600 : 400 }}>{w.week}週</td>
-                      <td className="text-right py-2 px-2 num" style={{ color: 'var(--text-primary)' }}>{w.total.toLocaleString()}</td>
-                      <td className="text-right py-2 px-2 num" style={{ color: 'var(--text-secondary)' }}>{formatYen(w.revenue)}</td>
+                    <tr key={w.week} className={`border-b border-b-border-subtle ${isLatest ? 'bg-crimson-soft' : ''}`}>
+                      <td className={`py-2 px-2 text-xs text-secondary ${isLatest ? 'font-semibold' : 'font-normal'}`}>{w.week}週</td>
+                      <td className="text-right py-2 px-2 num text-primary">{w.total.toLocaleString()}</td>
+                      <td className="text-right py-2 px-2 num text-secondary">{formatYen(w.revenue)}</td>
                       <td className="text-right py-2 px-2 num" style={{ color: w.profit >= 0 ? 'var(--positive)' : 'var(--negative)' }}>{formatYen(w.profit)}</td>
                       <td className="text-right py-2 px-2 num text-xs" style={{ color: rate >= 10 ? 'var(--positive)' : 'var(--warning)' }}>{rate}%</td>
                     </tr>
@@ -344,25 +331,25 @@ export default function ReportPage() {
 
         {/* 1件あたり経営指標 */}
         <div className="card p-5">
-          <h3 className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>1件あたりの経営指標</h3>
+          <h3 className="text-sm font-bold mb-3 text-primary">1件あたりの経営指標</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-              <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--text-muted)' }}>請求単価</p>
-              <p className="num text-lg font-bold" style={{ color: 'var(--text-primary)' }}>¥{clientRate}</p>
+            <div className="p-3 bg-elevated rounded-md">
+              <p className="text-[10px] font-medium mb-1 text-muted">請求単価</p>
+              <p className="num text-lg font-bold text-primary">¥{clientRate}</p>
             </div>
-            <div className="p-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-              <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--text-muted)' }}>平均報酬単価</p>
-              <p className="num text-lg font-bold" style={{ color: 'var(--brand-crimson)' }}>
+            <div className="p-3 bg-elevated rounded-md">
+              <p className="text-[10px] font-medium mb-1 text-muted">平均報酬単価</p>
+              <p className="num text-lg font-bold text-crimson">
                 ¥{Math.round(PLAYERS.reduce((s, p) => s + (driverRates[p.name] ?? 160), 0) / PLAYERS.length)}
               </p>
             </div>
-            <div className="p-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-              <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--text-muted)' }}>件あたり粗利</p>
-              <p className="num text-lg font-bold" style={{ color: 'var(--positive)' }}>¥{avgMarginPerUnit.toFixed(0)}</p>
+            <div className="p-3 bg-elevated rounded-md">
+              <p className="text-[10px] font-medium mb-1 text-muted">件あたり粗利</p>
+              <p className="num text-lg font-bold text-positive">¥{avgMarginPerUnit.toFixed(0)}</p>
             </div>
-            <div className="p-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-              <p className="text-[10px] font-medium mb-1" style={{ color: 'var(--text-muted)' }}>損益分岐（件/週）</p>
-              <p className="num text-lg font-bold" style={{ color: 'var(--brand-gold)' }}>
+            <div className="p-3 bg-elevated rounded-md">
+              <p className="text-[10px] font-medium mb-1 text-muted">損益分岐（件/週）</p>
+              <p className="num text-lg font-bold text-gold">
                 {avgMarginPerUnit > 0 ? Math.ceil(totals.labor / avgMarginPerUnit / PLAYERS.length).toLocaleString() : '-'}
               </p>
             </div>
@@ -370,12 +357,70 @@ export default function ReportPage() {
         </div>
 
         {/* フッター */}
-        <div className="text-center py-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-          <p className="text-[10px]" style={{ color: 'var(--text-disabled)' }}>
+        <div className="text-center py-4 border-t border-t-border-subtle">
+          <p className="text-[10px] text-disabled">
             TYD Logistics — 経営報告書 | 作成日 {dateStr} | 社外秘
           </p>
         </div>
       </div>
+
+      {/* SNSコンテンツ生成 */}
+      <ContentGenerator />
+    </div>
+  );
+}
+
+function ContentGenerator() {
+  const [content, setContent] = useState<{ title: string; body: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const generate = async (type: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type }),
+      });
+      const data = await res.json();
+      setContent(data.data);
+    } catch { /* ignore */ }
+    setLoading(false);
+  };
+
+  const copy = () => {
+    if (content) navigator.clipboard.writeText(content.body);
+  };
+
+  return (
+    <div className="card p-5 print-hide">
+      <h3 className="text-sm font-bold mb-3 text-primary">SNS投稿テンプレート</h3>
+      <div className="flex gap-2 mb-3">
+        {[
+          { type: 'weekly', label: '週間実績' },
+          { type: 'recruitment', label: '採用投稿' },
+          { type: 'achievement', label: '実績アピール' },
+        ].map(t => (
+          <button key={t.type} onClick={() => generate(t.type)} disabled={loading}
+            className="text-xs px-3 py-1.5 cursor-pointer bg-elevated text-secondary border border-border-default rounded-sm">
+            {t.label}
+          </button>
+        ))}
+      </div>
+      {loading && <p className="text-xs text-muted">生成中...</p>}
+      {content && !loading && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-primary">{content.title}</span>
+            <button onClick={copy} className="text-[10px] px-2 py-1 cursor-pointer bg-elevated text-secondary border border-border-default rounded-sm">
+              コピー
+            </button>
+          </div>
+          <pre className="text-xs p-3 whitespace-pre-wrap leading-relaxed bg-elevated rounded-md text-secondary">
+            {content.body}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }

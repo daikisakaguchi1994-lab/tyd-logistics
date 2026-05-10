@@ -142,19 +142,18 @@ export default function InvoicesPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>請求書管理</h1>
-        <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>請求書・支払明細の作成とプレビュー</p>
+        <h1 className="text-lg font-bold text-primary">請求書管理</h1>
+        <p className="text-xs mt-1 text-muted">請求書・支払明細の作成とプレビュー</p>
       </div>
 
       {/* タブ */}
-      <div className="flex gap-1 p-1" style={{ background: 'var(--bg-surface)', borderRadius: 'var(--r-md)', width: 'fit-content' }}>
+      <div className="flex gap-1 p-1 bg-surface rounded-md w-fit">
         {([['create', '新規作成'], ['history', '発行履歴']] as const).map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)}
-            className="text-xs px-4 py-2 cursor-pointer font-medium transition-colors"
+            className="text-xs px-4 py-2 cursor-pointer font-medium transition-colors border-0 rounded-sm"
             style={{
               background: tab === key ? 'var(--brand-crimson)' : 'transparent',
               color: tab === key ? 'var(--text-primary)' : 'var(--text-secondary)',
-              border: 'none', borderRadius: 'var(--r-sm)',
             }}>
             {label}
           </button>
@@ -169,12 +168,11 @@ export default function InvoicesPage() {
             <div className="flex gap-2">
               {([['to-partner', '取引先への請求書'], ['to-driver', 'ドライバーへの支払明細']] as const).map(([key, label]) => (
                 <button key={key} onClick={() => setDirection(key)}
-                  className="text-sm px-4 py-2.5 cursor-pointer transition-colors"
+                  className="text-sm px-4 py-2.5 cursor-pointer transition-colors rounded-md"
                   style={{
                     background: direction === key ? 'var(--brand-crimson-soft)' : 'var(--bg-elevated)',
                     color: direction === key ? 'var(--brand-crimson)' : 'var(--text-secondary)',
                     border: `1px solid ${direction === key ? 'var(--brand-crimson)' : 'var(--border-default)'}`,
-                    borderRadius: 'var(--r-md)',
                     fontWeight: direction === key ? 600 : 400,
                   }}>
                   {label}
@@ -190,22 +188,14 @@ export default function InvoicesPage() {
             </label>
             {direction === 'to-partner' ? (
               <select value={selectedPartner} onChange={e => setSelectedPartner(e.target.value)}
-                className="w-full max-w-md text-sm py-2.5 px-3 cursor-pointer"
-                style={{
-                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
-                }}>
+                className="w-full max-w-md text-sm py-2.5 px-3 cursor-pointer bg-elevated text-primary border border-border-default rounded-md outline-none">
                 {PARTNERS.map(p => (
                   <option key={p.id} value={p.id}>{p.name}（¥{p.billingRate}/件）</option>
                 ))}
               </select>
             ) : (
               <select value={selectedDriver} onChange={e => setSelectedDriver(e.target.value)}
-                className="w-full max-w-md text-sm py-2.5 px-3 cursor-pointer"
-                style={{
-                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
-                }}>
+                className="w-full max-w-md text-sm py-2.5 px-3 cursor-pointer bg-elevated text-primary border border-border-default rounded-md outline-none">
                 {PLAYERS.map(p => (
                   <option key={p.name} value={p.name}>{p.name}（{p.character}/ ¥{driverRates[p.name] ?? 160}/件）</option>
                 ))}
@@ -218,27 +208,19 @@ export default function InvoicesPage() {
             <label className="label block mb-2">対象期間</label>
             <div className="flex items-center gap-2 flex-wrap">
               <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)}
-                className="text-sm py-2.5 px-3"
-                style={{
-                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
-                  colorScheme: 'dark',
-                }} />
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>〜</span>
+                className="text-sm py-2.5 px-3 bg-elevated text-primary border border-border-default rounded-md outline-none"
+                style={{ colorScheme: 'dark' }} />
+              <span className="text-xs text-muted">〜</span>
               <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)}
-                className="text-sm py-2.5 px-3"
-                style={{
-                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
-                  colorScheme: 'dark',
-                }} />
+                className="text-sm py-2.5 px-3 bg-elevated text-primary border border-border-default rounded-md outline-none"
+                style={{ colorScheme: 'dark' }} />
             </div>
-            <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>{periodLabel}</p>
+            <p className="text-xs mt-1.5 text-muted">{periodLabel}</p>
           </div>
 
           {/* プレビューサマリー */}
-          <div className="p-4" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-            <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--text-secondary)' }}>概算</h3>
+          <div className="p-4 bg-elevated rounded-md">
+            <h3 className="text-xs font-semibold mb-3 text-secondary">概算</h3>
             {direction === 'to-partner' ? (() => {
               const partner = PARTNERS.find(p => p.id === selectedPartner)!;
               const recentWeeks = getWeeksInPeriod();
@@ -247,16 +229,16 @@ export default function InvoicesPage() {
               return (
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs">
-                    <span style={{ color: 'var(--text-muted)' }}>総配送件数</span>
-                    <span className="num font-semibold" style={{ color: 'var(--text-primary)' }}>{total.toLocaleString()}件</span>
+                    <span className="text-muted">総配送件数</span>
+                    <span className="num font-semibold text-primary">{total.toLocaleString()}件</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span style={{ color: 'var(--text-muted)' }}>小計</span>
-                    <span className="num" style={{ color: 'var(--text-primary)' }}>¥{subtotal.toLocaleString()}</span>
+                    <span className="text-muted">小計</span>
+                    <span className="num text-primary">¥{subtotal.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-bold pt-1.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                    <span style={{ color: 'var(--text-primary)' }}>合計（税込）</span>
-                    <span className="num" style={{ color: 'var(--positive)' }}>¥{Math.floor(subtotal * 1.1).toLocaleString()}</span>
+                  <div className="flex justify-between text-sm font-bold pt-1.5 border-t border-t-border-subtle">
+                    <span className="text-primary">合計（税込）</span>
+                    <span className="num text-positive">¥{Math.floor(subtotal * 1.1).toLocaleString()}</span>
                   </div>
                 </div>
               );
@@ -268,16 +250,16 @@ export default function InvoicesPage() {
               return (
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs">
-                    <span style={{ color: 'var(--text-muted)' }}>配送件数</span>
-                    <span className="num font-semibold" style={{ color: 'var(--text-primary)' }}>{qty.toLocaleString()}件</span>
+                    <span className="text-muted">配送件数</span>
+                    <span className="num font-semibold text-primary">{qty.toLocaleString()}件</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span style={{ color: 'var(--text-muted)' }}>単価</span>
-                    <span className="num" style={{ color: 'var(--text-primary)' }}>¥{rate}/件</span>
+                    <span className="text-muted">単価</span>
+                    <span className="num text-primary">¥{rate}/件</span>
                   </div>
-                  <div className="flex justify-between text-sm font-bold pt-1.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                    <span style={{ color: 'var(--text-primary)' }}>合計（税込）</span>
-                    <span className="num" style={{ color: 'var(--positive)' }}>¥{Math.floor(subtotal * 1.1).toLocaleString()}</span>
+                  <div className="flex justify-between text-sm font-bold pt-1.5 border-t border-t-border-subtle">
+                    <span className="text-primary">合計（税込）</span>
+                    <span className="num text-positive">¥{Math.floor(subtotal * 1.1).toLocaleString()}</span>
                   </div>
                 </div>
               );
@@ -285,8 +267,7 @@ export default function InvoicesPage() {
           </div>
 
           <button onClick={() => setPreview(generateInvoice())}
-            className="text-sm px-6 py-3 font-semibold cursor-pointer"
-            style={{ background: 'var(--brand-crimson)', color: 'var(--text-primary)', border: 'none', borderRadius: 'var(--r-md)' }}>
+            className="text-sm px-6 py-3 font-semibold cursor-pointer bg-crimson text-primary border-0 rounded-md">
             請求書をプレビュー
           </button>
         </div>
@@ -297,19 +278,19 @@ export default function InvoicesPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-default)' }}>
+                <tr className="border-b border-b-border-default">
                   {['請求番号', '発行日', '宛先', '金額', 'ステータス'].map(h => (
-                    <th key={h} className="text-left text-xs py-3 px-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                    <th key={h} className="text-left text-xs py-3 px-4 text-muted">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {mockHistory.map(inv => (
-                  <tr key={inv.number} className="transition-colors" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                    <td className="text-sm py-3 px-4 num font-medium" style={{ color: 'var(--text-primary)' }}>{inv.number}</td>
-                    <td className="text-sm py-3 px-4 num" style={{ color: 'var(--text-secondary)' }}>{inv.date}</td>
-                    <td className="text-sm py-3 px-4" style={{ color: 'var(--text-primary)' }}>{inv.to}</td>
-                    <td className="text-sm py-3 px-4 num font-semibold" style={{ color: 'var(--text-primary)' }}>¥{inv.amount.toLocaleString()}</td>
+                  <tr key={inv.number} className="transition-colors border-b border-b-border-subtle">
+                    <td className="text-sm py-3 px-4 num font-medium text-primary">{inv.number}</td>
+                    <td className="text-sm py-3 px-4 num text-secondary">{inv.date}</td>
+                    <td className="text-sm py-3 px-4 text-primary">{inv.to}</td>
+                    <td className="text-sm py-3 px-4 num font-semibold text-primary">¥{inv.amount.toLocaleString()}</td>
                     <td className="text-sm py-3 px-4">
                       <span className="text-xs px-2 py-1" style={{
                         background: inv.status === '支払済' ? 'rgba(16,185,129,0.1)' : 'rgba(234,179,8,0.15)',

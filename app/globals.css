@@ -34,6 +34,12 @@
   /* Border → border-subtle, border-default */
   --color-border-subtle: var(--border-subtle);
   --color-border-default: var(--border-default);
+
+  /* Radius */
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
 }
 
 body {

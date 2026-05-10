@@ -10,10 +10,9 @@ import { severityColor, severityLabel, daysLeftLabel } from '@/lib/utils';
 
 export function InfoRow({ label, value, warn, mono }: { label: string; value: string; warn?: boolean; mono?: boolean }) {
   return (
-    <div className="flex items-start justify-between py-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)', minWidth: '110px' }}>{label}</span>
-      <span className={`text-sm text-right ${mono ? 'num' : ''}`}
-        style={{ color: warn ? 'var(--negative)' : 'var(--text-primary)' }}>{value}</span>
+    <div className="flex items-start justify-between py-2 border-b border-b-border-subtle">
+      <span className="text-xs flex-shrink-0 text-muted" style={{ minWidth: '110px' }}>{label}</span>
+      <span className={`text-sm text-right ${mono ? 'num' : ''} ${warn ? 'text-negative' : 'text-primary'}`}>{value}</span>
     </div>
   );
 }
@@ -31,11 +30,11 @@ export function CopyButton({ label, value }: { label: string; value: string }) {
     });
   }, [value]);
   return (
-    <button onClick={handleCopy} className="text-[10px] px-2 py-0.5 font-medium cursor-pointer transition-colors"
+    <button onClick={handleCopy} className="text-[10px] px-2 py-0.5 font-medium cursor-pointer transition-colors border-0"
       style={{
         background: copied ? 'rgba(16,185,129,0.15)' : 'rgba(200,16,46,0.1)',
         color: copied ? '#10B981' : 'var(--brand-crimson)',
-        border: 'none', borderRadius: '4px',
+        borderRadius: '4px',
       }}>
       {copied ? '✓ コピー済み' : label}
     </button>
@@ -51,10 +50,10 @@ export function CopyableRow({ label, value, mono }: { label: string; value: stri
     });
   }, [value]);
   return (
-    <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)', minWidth: '110px' }}>{label}</span>
+    <div className="flex items-center justify-between py-2 border-b border-b-border-subtle">
+      <span className="text-xs flex-shrink-0 text-muted" style={{ minWidth: '110px' }}>{label}</span>
       <div className="flex items-center gap-2">
-        <span className={`text-sm ${mono ? 'num' : ''}`} style={{ color: 'var(--text-primary)' }}>{value}</span>
+        <span className={`text-sm ${mono ? 'num' : ''} text-primary`}>{value}</span>
         <button onClick={handleCopy} className="text-[10px] px-1.5 py-0.5 cursor-pointer flex-shrink-0"
           style={{
             background: copied ? 'rgba(16,185,129,0.15)' : 'var(--bg-base)',

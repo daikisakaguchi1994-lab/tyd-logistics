@@ -78,4 +78,10 @@ export const SHEET_NAMES = {
   invoice: '請求書',
   receipt: '領収書',
   players: 'プレイヤーデータ',
+  recruitment: '採用応募',
+  partners: '取引先',
+  dispatch: '配車',
+  outsource: '外注',
+  incidents: '事故・トラブル',
+  jobs: '案件配信',
 } as const;

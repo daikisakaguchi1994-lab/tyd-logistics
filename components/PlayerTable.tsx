@@ -32,8 +32,8 @@ export function PlayerTable({ stats }: PlayerTableProps) {
   return (
     <div className="card p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>ドライバーランキング</h2>
-        <span className="label" style={{ background: 'var(--bg-elevated)', padding: '2px 8px', borderRadius: 'var(--r-sm)' }}>今週</span>
+        <h2 className="text-sm font-bold text-primary">ドライバーランキング</h2>
+        <span className="label bg-elevated rounded-sm" style={{ padding: '2px 8px' }}>今週</span>
       </div>
 
       <div className="space-y-2">
@@ -44,24 +44,18 @@ export function PlayerTable({ stats }: PlayerTableProps) {
           const earnings = p.currentWeek * rate;
 
           return (
-            <div key={p.name} className="flex items-center gap-3 p-3 transition-colors"
-              style={{ borderRadius: 'var(--r-md)', background: i === 0 ? 'var(--brand-crimson-soft)' : 'transparent' }}>
+            <div key={p.name} className={`flex items-center gap-3 p-3 transition-colors rounded-md ${i === 0 ? 'bg-crimson-soft' : ''}`}>
               <div className={`rank-badge num ${rankClass}`}>{i + 1}</div>
-              <div className="w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0"
-                style={{ borderRadius: 'var(--r-sm)', background: 'var(--brand-crimson-soft)', color: 'var(--brand-crimson)' }}>
+              <div className="w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0 rounded-sm bg-crimson-soft text-crimson">
                 {p.name.charAt(0)}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-sm font-semibold whitespace-nowrap" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
-                  <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-disabled)' }}>{p.character}</span>
+                  <span className="text-sm font-semibold whitespace-nowrap text-primary">{p.name}</span>
+                  <span className="text-xs hidden sm:inline text-disabled">{p.character}</span>
                   {p.badge && (
-                    <span className="text-xs px-1.5 py-0.5 font-medium" style={{
-                      borderRadius: 'var(--r-sm)',
-                      background: p.badge === 'MVP' ? 'var(--brand-gold-soft)' : p.badge === '要フォロー' ? 'var(--negative-soft)' : 'var(--warning-soft)',
-                      color: p.badge === 'MVP' ? 'var(--brand-gold)' : p.badge === '要フォロー' ? 'var(--negative)' : 'var(--warning)',
-                    }}>{p.badge}</span>
+                    <span className={`text-xs px-1.5 py-0.5 font-medium rounded-sm ${p.badge === 'MVP' ? 'bg-gold-soft text-gold' : p.badge === '要フォロー' ? 'bg-negative-soft text-negative' : 'bg-warning-soft text-warning'}`}>{p.badge}</span>
                   )}
                 </div>
                 <div className="progress-bar"><div className="progress-fill" style={{ width: `${(p.currentWeek / maxWeek) * 100}%`, opacity: barOpacity }} /></div>
@@ -69,12 +63,12 @@ export function PlayerTable({ stats }: PlayerTableProps) {
 
               <div className="text-right flex-shrink-0">
                 <div className="flex items-baseline gap-0.5">
-                  <span className="num text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{p.currentWeek}</span>
-                  <span className="text-xs" style={{ color: 'var(--text-disabled)' }}>件</span>
+                  <span className="num text-lg font-bold text-primary">{p.currentWeek}</span>
+                  <span className="text-xs text-disabled">件</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="num text-xs" style={{ color: 'var(--brand-gold)' }}>¥{earnings.toLocaleString()}</span>
-                  <span className="num text-xs font-semibold" style={{ color: p.change >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+                  <span className="num text-xs text-gold">¥{earnings.toLocaleString()}</span>
+                  <span className={`num text-xs font-semibold ${p.change >= 0 ? 'text-positive' : 'text-negative'}`}>
                     {p.change >= 0 ? '+' : ''}{p.change}%
                   </span>
                 </div>
@@ -83,11 +77,10 @@ export function PlayerTable({ stats }: PlayerTableProps) {
               <div className="flex flex-col gap-1 flex-shrink-0">
                 <button
                   onClick={() => openAnalysis({ driverName: p.name, userId: p.userId })}
-                  className="text-xs px-2 py-1.5 font-medium transition-all cursor-pointer"
+                  className="text-xs px-2 py-1.5 font-medium transition-all cursor-pointer rounded-sm text-gold flex items-center justify-center"
                   style={{
-                    borderRadius: 'var(--r-sm)', background: 'transparent', color: 'var(--brand-gold)',
+                    background: 'transparent',
                     border: '1px solid rgba(212,164,55,0.3)', minWidth: '44px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--brand-gold)'; e.currentTarget.style.color = 'var(--bg-base)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--brand-gold)'; }}
@@ -97,11 +90,10 @@ export function PlayerTable({ stats }: PlayerTableProps) {
                 </button>
                 <button
                   onClick={() => openSendMessage({ driverName: p.name, userId: p.userId, context: `今週${p.currentWeek}件 (${p.change >= 0 ? '+' : ''}${p.change}%)` })}
-                  className="text-xs px-2 py-1.5 font-medium transition-all cursor-pointer"
+                  className="text-xs px-2 py-1.5 font-medium transition-all cursor-pointer rounded-sm text-crimson flex items-center justify-center"
                   style={{
-                    borderRadius: 'var(--r-sm)', background: 'transparent', color: 'var(--brand-crimson)',
+                    background: 'transparent',
                     border: '1px solid rgba(200,16,46,0.3)', minWidth: '44px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--brand-crimson)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--brand-crimson)'; }}
@@ -116,8 +108,8 @@ export function PlayerTable({ stats }: PlayerTableProps) {
       </div>
 
       {hasMore && (
-        <div className="mt-3 pt-3 text-center" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-          <button onClick={() => setShowAll(!showAll)} className="text-xs font-medium cursor-pointer" style={{ color: 'var(--brand-crimson)' }}>
+        <div className="mt-3 pt-3 text-center border-t border-t-border-subtle">
+          <button onClick={() => setShowAll(!showAll)} className="text-xs font-medium cursor-pointer text-crimson">
             {showAll ? '折りたたむ' : `全 ${sorted.length} 名を表示`}
           </button>
         </div>

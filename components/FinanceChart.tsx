@@ -25,7 +25,7 @@ export function FinanceChart() {
 
   return (
     <div className="card p-5">
-      <h2 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>週次 売上・コスト・粗利</h2>
+      <h2 className="text-sm font-bold mb-4 text-primary">週次 売上・コスト・粗利</h2>
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
           <CartesianGrid horizontal={true} vertical={false} stroke="#F5F5F7" strokeOpacity={0.05} />
@@ -72,39 +72,39 @@ export function FinanceTable() {
 
   return (
     <div className="card p-5">
-      <h2 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>ドライバー別 収支内訳（今週）</h2>
+      <h2 className="text-sm font-bold mb-4 text-primary">ドライバー別 収支内訳（今週）</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-              <th className="text-left py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>名前</th>
-              <th className="text-right py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>単価</th>
-              <th className="text-right py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>件数</th>
-              <th className="text-right py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>売上</th>
-              <th className="text-right py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>報酬</th>
-              <th className="text-right py-2 px-2 font-medium" style={{ color: 'var(--text-muted)' }}>粗利</th>
+            <tr className="border-b border-b-border-subtle">
+              <th className="text-left py-2 px-2 font-medium text-muted">名前</th>
+              <th className="text-right py-2 px-2 font-medium text-muted">単価</th>
+              <th className="text-right py-2 px-2 font-medium text-muted">件数</th>
+              <th className="text-right py-2 px-2 font-medium text-muted">売上</th>
+              <th className="text-right py-2 px-2 font-medium text-muted">報酬</th>
+              <th className="text-right py-2 px-2 font-medium text-muted">粗利</th>
             </tr>
           </thead>
           <tbody>
             {stats.map(s => (
-              <tr key={s.name} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td className="py-2.5 px-2 font-medium" style={{ color: 'var(--text-primary)' }}>{s.name}</td>
-                <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--text-muted)' }}>¥{s.rate}</td>
-                <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--text-secondary)' }}>{s.count}</td>
-                <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--text-secondary)' }}>¥{s.revenue.toLocaleString()}</td>
-                <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--brand-crimson)' }}>¥{s.labor.toLocaleString()}</td>
-                <td className="text-right py-2.5 px-2 num font-semibold" style={{ color: s.profit >= 0 ? 'var(--positive)' : 'var(--negative)' }}>¥{s.profit.toLocaleString()}</td>
+              <tr key={s.name} className="border-b border-b-border-subtle">
+                <td className="py-2.5 px-2 font-medium text-primary">{s.name}</td>
+                <td className="text-right py-2.5 px-2 num text-muted">¥{s.rate}</td>
+                <td className="text-right py-2.5 px-2 num text-secondary">{s.count}</td>
+                <td className="text-right py-2.5 px-2 num text-secondary">¥{s.revenue.toLocaleString()}</td>
+                <td className="text-right py-2.5 px-2 num text-crimson">¥{s.labor.toLocaleString()}</td>
+                <td className={`text-right py-2.5 px-2 num font-semibold ${s.profit >= 0 ? 'text-positive' : 'text-negative'}`}>¥{s.profit.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr style={{ borderTop: '2px solid var(--border-default)' }}>
-              <td className="py-2.5 px-2 font-bold" style={{ color: 'var(--text-primary)' }}>合計</td>
-              <td className="text-right py-2.5 px-2 num" style={{ color: 'var(--text-muted)' }}>-</td>
-              <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--text-primary)' }}>{totals.count}</td>
-              <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--text-primary)' }}>¥{totals.revenue.toLocaleString()}</td>
-              <td className="text-right py-2.5 px-2 num font-bold" style={{ color: 'var(--brand-crimson)' }}>¥{totals.labor.toLocaleString()}</td>
-              <td className="text-right py-2.5 px-2 num font-bold" style={{ color: totals.profit >= 0 ? 'var(--positive)' : 'var(--negative)' }}>¥{totals.profit.toLocaleString()}</td>
+              <td className="py-2.5 px-2 font-bold text-primary">合計</td>
+              <td className="text-right py-2.5 px-2 num text-muted">-</td>
+              <td className="text-right py-2.5 px-2 num font-bold text-primary">{totals.count}</td>
+              <td className="text-right py-2.5 px-2 num font-bold text-primary">¥{totals.revenue.toLocaleString()}</td>
+              <td className="text-right py-2.5 px-2 num font-bold text-crimson">¥{totals.labor.toLocaleString()}</td>
+              <td className={`text-right py-2.5 px-2 num font-bold ${totals.profit >= 0 ? 'text-positive' : 'text-negative'}`}>¥{totals.profit.toLocaleString()}</td>
             </tr>
           </tfoot>
         </table>

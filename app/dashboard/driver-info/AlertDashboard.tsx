@@ -36,7 +36,7 @@ export function AlertDashboard({ alerts, onSelectDriver }: { alerts: ExpiryAlert
             <path d="M5 13l4 4L19 7" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <p className="text-sm font-semibold" style={{ color: 'var(--positive)' }}>全ての資格・保険が有効期限内です</p>
+        <p className="text-sm font-semibold text-positive">全ての資格・保険が有効期限内です</p>
       </div>
     );
   }
@@ -59,22 +59,20 @@ export function AlertDashboard({ alerts, onSelectDriver }: { alerts: ExpiryAlert
               <span className="text-xs font-bold px-2 py-0.5" style={{ background: c.bg, color: c.text, borderRadius: '4px' }}>
                 {severityLabel(sev)}
               </span>
-              <span className="text-xs num font-medium" style={{ color: 'var(--text-muted)' }}>{items.length}件</span>
+              <span className="text-xs num font-medium text-muted">{items.length}件</span>
             </div>
             <div className="space-y-2">
               {items.map((a, i) => {
                 const key = `${a.driverName}-${a.category}`;
                 const isSending = sendingTo === key;
                 return (
-                  <div key={i} className="flex items-center gap-3 p-2.5"
-                    style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-sm)' }}>
+                  <div key={i} className="flex items-center gap-3 p-2.5 bg-elevated rounded-sm">
                     <button onClick={() => onSelectDriver(a.driverName)}
-                      className="text-sm font-semibold cursor-pointer hover:underline"
-                      style={{ color: 'var(--text-primary)', background: 'none', border: 'none', padding: 0 }}>
+                      className="text-sm font-semibold cursor-pointer hover:underline text-primary bg-none border-0 p-0">
                       {a.driverName}
                     </button>
-                    <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{a.category}</span>
-                    <span className="text-xs num" style={{ color: 'var(--text-muted)' }}>{a.expiryDate}</span>
+                    <span className="text-xs text-secondary">{a.category}</span>
+                    <span className="text-xs num text-muted">{a.expiryDate}</span>
                     <span className="text-[10px] num font-semibold" style={{ color: c.text }}>
                       {daysLeftLabel(a.daysLeft)}
                     </span>

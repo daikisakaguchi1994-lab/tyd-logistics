@@ -78,19 +78,50 @@ function IconInvoice() {
   );
 }
 
+function IconOutsource() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M9 1v4M9 13v4M1 9h4M13 9h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="9" cy="9" r="3" stroke="currentColor" strokeWidth="1.5"/>
+    </svg>
+  );
+}
+
+function IconPartner() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <rect x="2" y="3" width="14" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M6 7h6M6 10h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function IconRecruit() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="6" r="3" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M3 16c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M14 3v4M12 5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 const NAV_ITEMS = [
   { href: '/dashboard', label: '概要', icon: <IconGrid /> },
   { href: '/dashboard/drivers', label: 'ドライバー', icon: <IconUsers /> },
   { href: '/dashboard/driver-info', label: 'ドライバー情報', icon: <IconTruck /> },
   { href: '/dashboard/finance', label: '売上管理', icon: <IconYen /> },
   { href: '/dashboard/invoices', label: '請求書', icon: <IconInvoice /> },
+  { href: '/dashboard/jobs', label: '案件配信', icon: <IconYen /> },
+  { href: '/dashboard/dispatch', label: '配車管理', icon: <IconTruck /> },
+  { href: '/dashboard/outsource', label: '外注管理', icon: <IconOutsource /> },
+  { href: '/dashboard/partners', label: '取引先', icon: <IconPartner /> },
+  { href: '/dashboard/incidents', label: '事故・トラブル', icon: <IconReport /> },
+  { href: '/dashboard/recruitment', label: '採用管理', icon: <IconRecruit /> },
   { href: '/dashboard/report', label: '経営レポート', icon: <IconReport /> },
 ];
 
-const inputStyle = {
-  background: 'var(--bg-surface)', color: 'var(--text-primary)',
-  border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
-};
+const inputClasses = 'bg-surface text-primary border border-border-default rounded-sm outline-none';
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
@@ -110,18 +141,17 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           transition-transform duration-200
           lg:static lg:z-auto lg:translate-x-0
           ${open ? 'translate-x-0' : '-translate-x-full'}
+          bg-surface border-r border-r-border-subtle
         `}
-        style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border-subtle)' }}
       >
         {/* ロゴ */}
         <div className="p-5 flex items-center gap-3">
-          <div className="w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ background: 'var(--brand-crimson)', borderRadius: 'var(--r-md)', color: 'var(--text-primary)' }}>
+          <div className="w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0 bg-crimson rounded-md text-primary">
             T
           </div>
           <div>
-            <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>TYD</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Logistics</p>
+            <p className="text-sm font-bold text-primary">TYD</p>
+            <p className="text-xs text-muted">Logistics</p>
           </div>
         </div>
 
@@ -131,13 +161,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href} onClick={onClose}
-                className="flex items-center gap-3 px-3 py-2.5 text-sm transition-colors"
-                style={{
-                  borderRadius: 'var(--r-md)',
-                  background: isActive ? 'var(--brand-crimson-soft)' : 'transparent',
-                  color: isActive ? 'var(--brand-crimson)' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 600 : 400,
-                }}>
+                className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-colors rounded-md ${isActive ? 'bg-crimson-soft text-crimson font-semibold' : 'bg-transparent text-secondary font-normal'}`}>
                 {item.icon}
                 {item.label}
               </Link>
@@ -147,12 +171,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           {/* 設定トグル */}
           <button
             onClick={() => setSettingsOpen(!settingsOpen)}
-            className="flex items-center gap-3 px-3 py-2.5 text-sm w-full cursor-pointer transition-colors"
-            style={{
-              borderRadius: 'var(--r-md)',
-              background: settingsOpen ? 'var(--bg-elevated)' : 'transparent',
-              color: settingsOpen ? 'var(--text-primary)' : 'var(--text-secondary)',
-            }}
+            className={`flex items-center gap-3 px-3 py-2.5 text-sm w-full cursor-pointer transition-colors rounded-md ${settingsOpen ? 'bg-elevated text-primary' : 'bg-transparent text-secondary'}`}
           >
             <IconSettings />
             単価設定
@@ -164,12 +183,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
           {/* 設定パネル */}
           {settingsOpen && (
-            <div className="px-3 py-3 mx-1 space-y-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
+            <div className="px-3 py-3 mx-1 space-y-3 bg-elevated rounded-md">
               {/* 顧客請求単価 */}
               <div>
                 <label className="label block mb-1.5">顧客請求単価</label>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>¥</span>
+                  <span className="text-xs text-muted">¥</span>
                   <input
                     type="number"
                     min={1}
@@ -179,10 +198,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                       const v = parseInt(e.target.value, 10);
                       if (!isNaN(v) && v >= 1) setClientRate(v);
                     }}
-                    className="w-full text-sm py-1.5 px-2 num"
-                    style={inputStyle}
+                    className={`w-full text-sm py-1.5 px-2 num ${inputClasses}`}
                   />
-                  <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>/件</span>
+                  <span className="text-xs flex-shrink-0 text-muted">/件</span>
                 </div>
               </div>
 
@@ -191,7 +209,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 <label className="label block mb-1.5">ドライバー報酬（一括）</label>
                 <div className="flex gap-2">
                   <div className="flex items-center gap-1.5 flex-1">
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>¥</span>
+                    <span className="text-xs text-muted">¥</span>
                     <input
                       type="number"
                       min={1}
@@ -201,17 +219,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                         const v = parseInt(e.target.value, 10);
                         if (!isNaN(v) && v >= 1) setBulkRate(v);
                       }}
-                      className="w-full text-sm py-1.5 px-2 num"
-                      style={inputStyle}
+                      className={`w-full text-sm py-1.5 px-2 num ${inputClasses}`}
                     />
                   </div>
                   <button
                     onClick={() => setAllDriverRates(bulkRate)}
-                    className="text-xs px-2 py-1.5 cursor-pointer flex-shrink-0"
-                    style={{
-                      background: 'var(--brand-crimson)', color: 'var(--text-primary)',
-                      border: 'none', borderRadius: 'var(--r-sm)',
-                    }}
+                    className="text-xs px-2 py-1.5 cursor-pointer flex-shrink-0 bg-crimson text-primary border-0 rounded-sm"
                   >
                     全員適用
                   </button>
@@ -223,18 +236,18 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 <label className="label block mb-1.5">ドライバー個別報酬</label>
                 <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
                   {PLAYERS.map(p => (
-                    <div key={p.name} className="p-2" style={{ background: 'var(--bg-surface)', borderRadius: 'var(--r-sm)' }}>
+                    <div key={p.name} className="p-2 bg-surface rounded-sm">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <div className="w-5 h-5 flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                          style={{ borderRadius: '4px', background: 'var(--brand-crimson-soft)', color: 'var(--brand-crimson)' }}>
+                        <div className="w-5 h-5 flex items-center justify-center text-[10px] font-bold flex-shrink-0 bg-crimson-soft text-crimson"
+                          style={{ borderRadius: '4px' }}>
                           {p.name.charAt(0)}
                         </div>
-                        <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
-                        <span className="text-[10px]" style={{ color: 'var(--text-disabled)' }}>{p.character}</span>
+                        <span className="text-xs font-semibold text-primary">{p.name}</span>
+                        <span className="text-[10px] text-disabled">{p.character}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1 flex-1">
-                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>¥</span>
+                          <span className="text-[10px] text-muted">¥</span>
                           <input
                             type="number"
                             min={1}
@@ -244,17 +257,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                               const v = parseInt(e.target.value, 10);
                               if (!isNaN(v) && v >= 1) setDriverRate(p.name, v);
                             }}
-                            className="w-full text-xs py-1 px-1.5 num"
-                            style={{
-                              background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                              border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
-                            }}
+                            className="w-full text-xs py-1 px-1.5 num bg-elevated text-primary border border-border-default rounded-sm outline-none"
                           />
                         </div>
-                        <span className="text-[10px] num font-semibold px-1.5 py-0.5 flex-shrink-0" style={{
+                        <span className={`text-[10px] num font-semibold px-1.5 py-0.5 flex-shrink-0 ${getMargin(p.name) > 0 ? 'text-positive' : 'text-negative'}`} style={{
                           borderRadius: '4px',
                           background: getMargin(p.name) > 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                          color: getMargin(p.name) > 0 ? 'var(--positive)' : 'var(--negative)',
                         }}>
                           粗利 ¥{getMargin(p.name)}
                         </span>
@@ -268,10 +276,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         </nav>
 
         {/* 下部 */}
-        <div className="p-4" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="p-4 border-t border-t-border-subtle">
           <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full pulse-dot" style={{ background: 'var(--positive)' }} />
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>LIVE</span>
+            <div className="w-2 h-2 rounded-full pulse-dot bg-positive" />
+            <span className="text-xs text-muted">LIVE</span>
           </div>
         </div>
       </aside>

@@ -18,6 +18,14 @@ const RULES: { scenario: Scenario; patterns: RegExp[]; extract?: (text: string) 
     patterns: [/(案件|仕事|配送予定|シフト)/, /明日.*あ(る|り)/, /(今週|来週).*予定/],
   },
   {
+    scenario: 'incident',
+    patterns: [/(事故|トラブル|破損|壊れ|ぶつけ|接触|クレーム|紛失|誤配)/],
+  },
+  {
+    scenario: 'recruitment',
+    patterns: [/(応募|採用|求人|働きたい|ドライバー.*希望|仕事.*探|募集.*見|興味.*ある.*ドライバー|配送.*やりたい)/],
+  },
+  {
     scenario: 'invoice',
     patterns: [/請求書/, /月次請求/, /今月.*請求/, /請求.*発行/, /請求.*お願い/],
     extract: (text) => parseDocumentRequest(text),

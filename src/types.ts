@@ -4,6 +4,8 @@ export type Scenario =
   | 'job_inquiry'
   | 'invoice'
   | 'receipt'
+  | 'recruitment'
+  | 'incident'
   | 'unknown';
 
 export interface ClassifyResult {

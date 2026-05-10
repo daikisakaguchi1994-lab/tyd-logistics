@@ -32,13 +32,13 @@ export function WeeklySummary({ summary }: WeeklySummaryProps) {
   return (
     <div className="card p-5 h-full flex flex-col">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-7 h-7 flex items-center justify-center text-xs font-bold"
-          style={{ borderRadius: '50%', background: 'var(--brand-crimson-soft)', color: 'var(--brand-crimson)' }}>
+        <div className="w-7 h-7 flex items-center justify-center text-xs font-bold bg-crimson-soft text-crimson"
+          style={{ borderRadius: '50%' }}>
           AI
         </div>
         <div>
-          <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>週次AIサマリー</h2>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Claude による自動分析</p>
+          <h2 className="text-sm font-bold text-primary">週次AIサマリー</h2>
+          <p className="text-xs text-muted">Claude による自動分析</p>
         </div>
       </div>
 
@@ -57,18 +57,12 @@ export function WeeklySummary({ summary }: WeeklySummaryProps) {
             const driverName = extractDriverName(trimmed);
             return (
               <div key={i} className="flex items-center gap-2 pl-1 py-0.5">
-                <div className="w-0.5 self-stretch flex-shrink-0 rounded-full" style={{ background: 'var(--brand-crimson)' }} />
-                <p className="text-sm flex-1" style={{ color: 'var(--text-secondary)' }}>{trimmed}</p>
+                <div className="w-0.5 self-stretch flex-shrink-0 rounded-full bg-crimson" />
+                <p className="text-sm flex-1 text-secondary">{trimmed}</p>
                 {driverName && (
                   <button
                     onClick={() => handleAction(trimmed, driverName)}
-                    className="flex-shrink-0 text-xs px-2 py-1 cursor-pointer transition-colors whitespace-nowrap"
-                    style={{
-                      borderRadius: 'var(--r-sm)',
-                      background: 'var(--brand-crimson-soft)',
-                      color: 'var(--brand-crimson)',
-                      border: 'none',
-                    }}
+                    className="flex-shrink-0 text-xs px-2 py-1 cursor-pointer transition-colors whitespace-nowrap rounded-sm bg-crimson-soft text-crimson border-0"
                   >
                     LINE送信
                   </button>
@@ -81,13 +75,13 @@ export function WeeklySummary({ summary }: WeeklySummaryProps) {
           if (trimmed.startsWith('・')) {
             return (
               <div key={i} className="flex gap-2 pl-1 py-0.5">
-                <div className="w-0.5 self-stretch flex-shrink-0 rounded-full" style={{ background: 'var(--brand-crimson)' }} />
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{trimmed.slice(1).trim()}</p>
+                <div className="w-0.5 self-stretch flex-shrink-0 rounded-full bg-crimson" />
+                <p className="text-sm text-secondary">{trimmed.slice(1).trim()}</p>
               </div>
             );
           }
 
-          return <p key={i} className="text-sm" style={{ color: 'var(--text-secondary)' }}>{trimmed}</p>;
+          return <p key={i} className="text-sm text-secondary">{trimmed}</p>;
         })}
       </div>
     </div>

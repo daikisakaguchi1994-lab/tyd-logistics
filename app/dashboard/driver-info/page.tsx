@@ -35,15 +35,14 @@ export default function DriverInfoPage() {
       {/* ヘッダー */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>ドライバー情報管理</h1>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+          <h1 className="text-lg font-bold text-primary">ドライバー情報管理</h1>
+          <p className="text-xs mt-1 text-muted">
             ドライバー・車両・資格情報の一元管理 / 期限アラート / LINE更新通知
           </p>
         </div>
         {view !== 'dashboard' && (
           <button onClick={() => { setView('dashboard'); setSelected(null); }}
-            className="text-xs px-3 py-1.5 cursor-pointer"
-            style={{ background: 'var(--bg-surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)' }}>
+            className="text-xs px-3 py-1.5 cursor-pointer bg-surface text-secondary border border-border-default rounded-sm">
             ダッシュボードに戻る
           </button>
         )}
@@ -55,14 +54,14 @@ export default function DriverInfoPage() {
           {/* サマリーカード */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="card p-4 text-center">
-              <p className="text-2xl num font-bold" style={{ color: 'var(--text-primary)' }}>{totalDrivers}</p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>登録ドライバー</p>
+              <p className="text-2xl num font-bold text-primary">{totalDrivers}</p>
+              <p className="text-[10px] mt-1 text-muted">登録ドライバー</p>
             </div>
             <div className="card p-4 text-center cursor-pointer" onClick={() => setView('list')}>
-              <p className="text-2xl num font-bold" style={{ color: driversWithAlerts > 0 ? 'var(--negative)' : 'var(--positive)' }}>
+              <p className={`text-2xl num font-bold ${driversWithAlerts > 0 ? 'text-negative' : 'text-positive'}`}>
                 {driversWithAlerts}
               </p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>要対応ドライバー</p>
+              <p className="text-[10px] mt-1 text-muted">要対応ドライバー</p>
             </div>
             <div className="card p-4 text-center">
               <div className="flex items-center justify-center gap-2">
@@ -70,36 +69,36 @@ export default function DriverInfoPage() {
                 <span className="text-lg num font-bold" style={{ color: '#F97316' }}>{urgentCount}</span>
                 <span className="text-lg num font-bold" style={{ color: '#EAB308' }}>{warningCount}</span>
               </div>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[10px] mt-1 text-muted">
                 <span style={{ color: '#EF4444' }}>切れ</span> /
                 <span style={{ color: '#F97316' }}> 緊急</span> /
                 <span style={{ color: '#EAB308' }}> 注意</span>
               </p>
             </div>
             <div className="card p-4 text-center cursor-pointer" onClick={() => setView('list')}>
-              <p className="text-2xl num font-bold" style={{ color: 'var(--text-primary)' }}>{totalDrivers - driversWithAlerts}</p>
-              <p className="text-[10px] mt-1" style={{ color: 'var(--positive)' }}>問題なし</p>
+              <p className="text-2xl num font-bold text-primary">{totalDrivers - driversWithAlerts}</p>
+              <p className="text-[10px] mt-1 text-positive">問題なし</p>
             </div>
           </div>
 
           {/* フロー図 */}
           <div className="card p-5">
-            <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>運用フロー</h3>
+            <h3 className="text-sm font-bold mb-4 text-primary">運用フロー</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { step: '1', title: '情報の登録・更新', desc: 'ドライバー・車両・資格情報をダッシュボードで一元管理', color: '#2563eb' },
                 { step: '2', title: '期限アラート通知', desc: '期限到来時にシステムアラート＋LINEで更新依頼を自動通知', color: '#F97316' },
                 { step: '3', title: '更新資料の提出', desc: 'ドライバーが更新した資格・書類をシステムに反映', color: '#10B981' },
               ].map(s => (
-                <div key={s.step} className="p-4 relative" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)', borderTop: `3px solid ${s.color}` }}>
+                <div key={s.step} className="p-4 relative bg-elevated rounded-md" style={{ borderTop: `3px solid ${s.color}` }}>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="w-6 h-6 flex items-center justify-center text-[10px] font-bold rounded-full"
                       style={{ background: s.color, color: '#fff' }}>
                       {s.step}
                     </span>
-                    <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{s.title}</span>
+                    <span className="text-xs font-bold text-primary">{s.title}</span>
                   </div>
-                  <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{s.desc}</p>
+                  <p className="text-[11px] leading-relaxed text-secondary">{s.desc}</p>
                 </div>
               ))}
             </div>
@@ -107,7 +106,7 @@ export default function DriverInfoPage() {
 
           {/* アラートダッシュボード */}
           <div>
-            <h3 className="text-sm font-bold mb-3" style={{ color: 'var(--text-primary)' }}>期限アラート</h3>
+            <h3 className="text-sm font-bold mb-3 text-primary">期限アラート</h3>
             <AlertDashboard alerts={alerts} onSelectDriver={selectDriver} />
           </div>
 
@@ -116,8 +115,7 @@ export default function DriverInfoPage() {
 
           {/* 全ドライバーリストへ */}
           <button onClick={() => setView('list')}
-            className="w-full text-sm py-3 font-medium cursor-pointer"
-            style={{ background: 'var(--bg-surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)' }}>
+            className="w-full text-sm py-3 font-medium cursor-pointer bg-surface text-secondary border border-border-default rounded-md">
             全ドライバー一覧を表示
           </button>
         </>
@@ -137,22 +135,17 @@ export default function DriverInfoPage() {
                 <button
                   key={p.name}
                   onClick={() => selectDriver(p.name)}
-                  className="w-full text-left p-3 cursor-pointer transition-colors"
-                  style={{
-                    background: isActive ? 'var(--brand-crimson-soft)' : 'var(--bg-surface)',
-                    border: `1px solid ${isActive ? 'var(--brand-crimson)' : 'var(--border-subtle)'}`,
-                    borderRadius: 'var(--r-md)',
-                  }}
+                  className={`w-full text-left p-3 cursor-pointer transition-colors rounded-md border ${isActive ? 'bg-crimson-soft border-crimson' : 'bg-surface border-border-subtle'}`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 flex items-center justify-center text-sm font-bold flex-shrink-0"
-                      style={{ borderRadius: 'var(--r-sm)', background: p.color, color: '#fff' }}>
+                    <div className="w-9 h-9 flex items-center justify-center text-sm font-bold flex-shrink-0 rounded-sm"
+                      style={{ background: p.color, color: '#fff' }}>
                       {p.name.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{p.name}</span>
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{p.character}</span>
+                        <span className="text-sm font-semibold text-primary">{p.name}</span>
+                        <span className="text-[10px] text-muted">{p.character}</span>
                         {worstSeverity !== 'ok' && (
                           <span className="w-2 h-2 rounded-full flex-shrink-0"
                             style={{ background: severityColor(worstSeverity).text }} />
@@ -160,8 +153,8 @@ export default function DriverInfoPage() {
                       </div>
                       {rec && (
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{rec.vehicle.model}</span>
-                          <span className="text-[10px] num" style={{ color: 'var(--text-disabled)' }}>{rec.vehicle.plateNumber}</span>
+                          <span className="text-[10px] text-muted">{rec.vehicle.model}</span>
+                          <span className="text-[10px] num text-disabled">{rec.vehicle.plateNumber}</span>
                         </div>
                       )}
                       {driverAlerts.length > 0 && (
@@ -170,7 +163,7 @@ export default function DriverInfoPage() {
                             <SeverityBadge key={i} severity={a.severity} />
                           ))}
                           {driverAlerts.length > 2 && (
-                            <span className="text-[9px] px-1 py-0.5" style={{ color: 'var(--text-muted)' }}>+{driverAlerts.length - 2}</span>
+                            <span className="text-[9px] px-1 py-0.5 text-muted">+{driverAlerts.length - 2}</span>
                           )}
                         </div>
                       )}
@@ -186,14 +179,13 @@ export default function DriverInfoPage() {
               <DriverDetailPanel record={selectedRecord} onClose={() => { setSelected(null); setView('list'); }} />
             ) : (
               <div className="card p-12 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full"
-                  style={{ background: 'var(--bg-elevated)' }}>
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-elevated">
                   <svg width="28" height="28" viewBox="0 0 18 18" fill="none">
                     <circle cx="7" cy="5" r="2.5" stroke="var(--text-disabled)" strokeWidth="1.5"/>
                     <path d="M2 15c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="var(--text-disabled)" strokeWidth="1.5" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>左のリストからドライバーを選択してください</p>
+                <p className="text-sm text-muted">左のリストからドライバーを選択してください</p>
               </div>
             )}
           </div>

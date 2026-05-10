@@ -106,9 +106,7 @@ export function TickerBar() {
   const duration = items.length * 4;
 
   return (
-    <div className="overflow-hidden" style={{
-      background: 'var(--bg-surface)',
-      borderBottom: '1px solid var(--border-subtle)',
+    <div className="overflow-hidden bg-surface border-b border-b-border-subtle" style={{
       height: '32px',
     }}>
       <div

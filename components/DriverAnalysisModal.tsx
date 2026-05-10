@@ -20,11 +20,11 @@ interface AnalysisResult {
 
 function StatRow({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="flex items-center justify-between py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{label}</span>
+    <div className="flex items-center justify-between py-1.5 border-b border-b-border-subtle">
+      <span className="text-xs text-muted">{label}</span>
       <div className="text-right">
-        <span className="num text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{value}</span>
-        {sub && <span className="num text-xs ml-1.5" style={{ color: 'var(--text-muted)' }}>{sub}</span>}
+        <span className="num text-sm font-semibold text-primary">{value}</span>
+        {sub && <span className="num text-xs ml-1.5 text-muted">{sub}</span>}
       </div>
     </div>
   );
@@ -103,12 +103,9 @@ export function DriverAnalysisModal({ driverName, userId, onClose }: DriverAnaly
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
       <div
-        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-elevated border border-border-default rounded-xl"
         onClick={e => e.stopPropagation()}
         style={{
-          background: 'var(--bg-elevated)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--r-xl)',
           boxShadow: 'var(--shadow-elevated)',
         }}
       >
@@ -116,20 +113,19 @@ export function DriverAnalysisModal({ driverName, userId, onClose }: DriverAnaly
           {/* ヘッダー */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center text-sm font-bold"
-                style={{ borderRadius: 'var(--r-md)', background: 'var(--brand-gold-soft)', color: 'var(--brand-gold)' }}>
+              <div className="w-10 h-10 flex items-center justify-center text-sm font-bold rounded-md bg-gold-soft text-gold">
                 AI
               </div>
               <div>
-                <h3 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>
+                <h3 className="text-base font-bold text-primary">
                   {driverName}さん パフォーマンス分析
                 </h3>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs text-muted">
                   {detail.character} / 累計 {detail.totalDeliveries.toLocaleString()}件
                 </p>
               </div>
             </div>
-            <button onClick={onClose} className="p-1 cursor-pointer" style={{ color: 'var(--text-muted)' }}>
+            <button onClick={onClose} className="p-1 cursor-pointer text-muted">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
@@ -138,32 +134,30 @@ export function DriverAnalysisModal({ driverName, userId, onClose }: DriverAnaly
 
           {phase === 'analyzing' && (
             <div className="py-12 text-center">
-              <div className="w-10 h-10 mx-auto mb-4 rounded-full flex items-center justify-center"
-                style={{ background: 'var(--brand-gold-soft)' }}>
+              <div className="w-10 h-10 mx-auto mb-4 rounded-full flex items-center justify-center bg-gold-soft">
                 <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
                   style={{ borderColor: 'var(--brand-gold)', borderTopColor: 'transparent' }} />
               </div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>AIが分析中...</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>過去20週間のデータを解析しています</p>
+              <p className="text-sm font-medium text-primary">AIが分析中...</p>
+              <p className="text-xs mt-1 text-muted">過去20週間のデータを解析しています</p>
             </div>
           )}
 
           {phase === 'sent' && (
             <div className="text-center py-8">
-              <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full"
-                style={{ background: 'var(--positive-soft)' }}>
+              <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center rounded-full bg-positive-soft">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M5 13l4 4L19 7" stroke="var(--positive)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <p className="text-sm font-semibold" style={{ color: 'var(--positive)' }}>送信完了</p>
+              <p className="text-sm font-semibold text-positive">送信完了</p>
             </div>
           )}
 
           {phase === 'result' && analysis && (
             <div className="space-y-4">
               {/* 数値サマリー */}
-              <div className="p-3" style={{ background: 'var(--bg-surface)', borderRadius: 'var(--r-md)' }}>
+              <div className="p-3 bg-surface rounded-md">
                 <StatRow label="今週" value={`${detail.currentWeek}件`} sub={`1日平均 ${detail.dailyAvg}件`} />
                 <StatRow label="直近4週平均" value={`${detail.last4Avg}件`} sub={`前月比 ${detail.monthChange >= 0 ? '+' : ''}${detail.monthChange}%`} />
                 <StatRow label="チーム平均比" value={`${detail.vsTeam >= 0 ? '+' : ''}${detail.vsTeam}%`} sub={`平均 ${detail.teamAvgCurrent}件`} />
@@ -180,33 +174,22 @@ export function DriverAnalysisModal({ driverName, userId, onClose }: DriverAnaly
               </div>
 
               {/* メッセージ生成 */}
-              <div className="pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                <label className="text-xs font-semibold block mb-2" style={{ color: 'var(--text-primary)' }}>
+              <div className="pt-3 border-t border-t-border-subtle">
+                <label className="text-xs font-semibold block mb-2 text-primary">
                   分析に基づく推奨メッセージ
                 </label>
                 <textarea
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   rows={4}
-                  className="w-full p-3 text-sm resize-none"
-                  style={{
-                    background: 'var(--bg-surface)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: 'var(--r-md)',
-                    color: 'var(--text-primary)',
-                    outline: 'none',
-                  }}
+                  className="w-full p-3 text-sm resize-none bg-surface border border-border-default rounded-md text-primary outline-none"
                 />
                 <div className="flex justify-end mt-3">
                   <button
                     onClick={sendMessage}
                     disabled={sending || !message.trim()}
-                    className="text-xs px-4 py-2.5 font-semibold cursor-pointer transition-colors"
+                    className={`text-xs px-4 py-2.5 font-semibold cursor-pointer transition-colors text-primary rounded-sm border-0 ${sending || !message.trim() ? 'bg-disabled' : 'bg-crimson'}`}
                     style={{
-                      background: sending || !message.trim() ? 'var(--text-disabled)' : 'var(--brand-crimson)',
-                      color: 'var(--text-primary)',
-                      borderRadius: 'var(--r-sm)',
-                      border: 'none',
                       minHeight: '44px',
                     }}
                   >
@@ -224,12 +207,12 @@ export function DriverAnalysisModal({ driverName, userId, onClose }: DriverAnaly
 
 function AnalysisSection({ icon, title, content }: { icon: string; title: string; content: string }) {
   return (
-    <div className="p-3" style={{ background: 'var(--bg-surface)', borderRadius: 'var(--r-md)' }}>
+    <div className="p-3 bg-surface rounded-md">
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-sm">{icon}</span>
-        <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</span>
+        <span className="text-xs font-semibold text-primary">{title}</span>
       </div>
-      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{content}</p>
+      <p className="text-xs leading-relaxed text-secondary">{content}</p>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export function GrowthChart({ data, players }: GrowthChartProps) {
   return (
     <div className="card p-5 h-full" role="img" aria-label={`配送件数推移グラフ。主役: ${highlighted}`}>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-        <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>配送件数推移</h2>
+        <h2 className="text-sm font-bold text-primary">配送件数推移</h2>
         <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           {players.map((p, i) => {
             const isActive = p.name === highlighted;

@@ -4,6 +4,8 @@ import { handleAbsence } from './absence';
 import { handleJobInquiry } from './jobInquiry';
 import { handleInvoice } from './invoice';
 import { handleReceipt } from './receipt';
+import { handleRecruitment } from './recruitment';
+import { handleIncident } from './incident';
 
 // ============================================================
 // ハンドラーレジストリ
@@ -18,6 +20,8 @@ const HANDLER_MAP: Record<Exclude<Scenario, 'unknown'>, Handler> = {
   job_inquiry: handleJobInquiry,
   invoice: handleInvoice,
   receipt: handleReceipt,
+  recruitment: handleRecruitment,
+  incident: handleIncident,
 };
 
 /**

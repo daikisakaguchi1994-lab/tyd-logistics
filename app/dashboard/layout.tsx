@@ -23,19 +23,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <TickerBar />
 
             <header
-              className="sticky top-0 z-10 flex items-center justify-between px-4 lg:px-6 py-3"
-              style={{ background: 'rgba(10,14,26,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border-subtle)' }}
+              className="sticky top-0 z-10 flex items-center justify-between px-4 lg:px-6 py-3 border-b border-b-border-subtle"
+              style={{ background: 'rgba(10,14,26,0.85)', backdropFilter: 'blur(12px)' }}
             >
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 cursor-pointer"
-                style={{ color: 'var(--text-secondary)' }} aria-label="メニューを開く">
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 cursor-pointer text-secondary" aria-label="メニューを開く">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
               </button>
               <div />
               <div className="flex items-center gap-2">
-                <span className="text-xs px-2.5 py-1"
-                  style={{ background: 'var(--bg-surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--r-sm)' }}>
+                <span className="text-xs px-2.5 py-1 bg-surface text-secondary border border-border-subtle rounded-sm">
                   {dateStr}
                 </span>
                 <button
@@ -43,8 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     await fetch('/api/auth', { method: 'DELETE' });
                     window.location.href = '/login';
                   }}
-                  className="text-xs px-2.5 py-1 cursor-pointer"
-                  style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--r-sm)' }}
+                  className="text-xs px-2.5 py-1 cursor-pointer bg-elevated text-muted border border-border-subtle rounded-sm"
                 >
                   ログアウト
                 </button>

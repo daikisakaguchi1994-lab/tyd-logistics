@@ -35,22 +35,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--bg-base)' }}>
-      <div className="w-full max-w-sm" style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--r-xl)',
-        boxShadow: 'var(--shadow-elevated)',
-      }}>
+      <div className="w-full max-w-sm bg-surface border border-border-subtle rounded-xl"
+        style={{ boxShadow: 'var(--shadow-elevated)' }}>
         <div className="p-8">
           {/* Logo */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 flex items-center justify-center text-lg font-bold"
-              style={{ background: 'var(--brand-crimson)', borderRadius: 'var(--r-md)', color: 'var(--text-primary)' }}>
+            <div className="w-12 h-12 flex items-center justify-center text-lg font-bold bg-crimson rounded-md text-primary">
               T
             </div>
             <div>
-              <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TYD</p>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Logistics Dashboard</p>
+              <p className="text-lg font-bold text-primary">TYD</p>
+              <p className="text-xs text-muted">Logistics Dashboard</p>
             </div>
           </div>
 
@@ -63,23 +58,13 @@ export default function LoginPage() {
                 onChange={e => setPassword(e.target.value)}
                 placeholder="パスワードを入力"
                 autoFocus
-                className="w-full text-sm py-3 px-4"
-                style={{
-                  background: 'var(--bg-elevated)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-default)',
-                  borderRadius: 'var(--r-md)',
-                  outline: 'none',
-                }}
+                className="w-full text-sm py-3 px-4 bg-elevated text-primary border border-border-default rounded-md outline-none"
               />
             </div>
 
             {error && (
-              <p className="text-xs text-center py-2 px-3" style={{
-                color: 'var(--negative)',
-                background: 'rgba(239,68,68,0.1)',
-                borderRadius: 'var(--r-sm)',
-              }}>
+              <p className="text-xs text-center py-2 px-3 text-negative rounded-sm"
+                style={{ background: 'rgba(239,68,68,0.1)' }}>
                 {error}
               </p>
             )}
@@ -87,12 +72,9 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="w-full text-sm font-semibold py-3 cursor-pointer transition-opacity"
+              className="w-full text-sm font-semibold py-3 cursor-pointer transition-opacity text-primary border-0 rounded-md"
               style={{
                 background: loading || !password ? 'var(--text-disabled)' : 'var(--brand-crimson)',
-                color: 'var(--text-primary)',
-                border: 'none',
-                borderRadius: 'var(--r-md)',
               }}
             >
               {loading ? 'ログイン中...' : 'ログイン'}

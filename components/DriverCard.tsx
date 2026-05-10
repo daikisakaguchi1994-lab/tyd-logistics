@@ -57,24 +57,19 @@ export function DriverCard({ player, currentWeek, change, monthlyTotal, badge }:
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 flex items-center justify-center text-sm font-bold"
-            style={{ borderRadius: 'var(--r-md)', background: 'var(--brand-crimson-soft)', color: 'var(--brand-crimson)' }}>
+          <div className="w-9 h-9 flex items-center justify-center text-sm font-bold rounded-md bg-crimson-soft text-crimson">
             {player.name.charAt(0)}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{player.name}</span>
-              <span className="text-xs" style={{ color: 'var(--text-disabled)' }}>{player.character}</span>
+              <span className="text-sm font-bold text-primary">{player.name}</span>
+              <span className="text-xs text-disabled">{player.character}</span>
             </div>
-            <span className="text-[10px] num" style={{ color: 'var(--text-muted)' }}>¥{rate}/個</span>
+            <span className="text-[10px] num text-muted">¥{rate}/個</span>
           </div>
         </div>
         {badge && (
-          <span className="text-xs px-2 py-0.5 font-medium" style={{
-            borderRadius: 'var(--r-sm)',
-            background: badge === 'MVP' ? 'var(--brand-gold-soft)' : badge === '要フォロー' ? 'var(--negative-soft)' : 'var(--warning-soft)',
-            color: badge === 'MVP' ? 'var(--brand-gold)' : badge === '要フォロー' ? 'var(--negative)' : 'var(--warning)',
-          }}>{badge}</span>
+          <span className={`text-xs px-2 py-0.5 font-medium rounded-sm ${badge === 'MVP' ? 'bg-gold-soft text-gold' : badge === '要フォロー' ? 'bg-negative-soft text-negative' : 'bg-warning-soft text-warning'}`}>{badge}</span>
         )}
       </div>
 
@@ -82,20 +77,19 @@ export function DriverCard({ player, currentWeek, change, monthlyTotal, badge }:
       <div className="flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-1.5">
-            <span className="num text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{currentWeek}</span>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>件/週</span>
+            <span className="num text-3xl font-bold text-primary">{currentWeek}</span>
+            <span className="text-xs text-muted">件/週</span>
           </div>
           <div className="flex items-center gap-3 mt-1">
-            <span className="num text-xs" style={{ color: 'var(--text-muted)' }}>累計 {monthlyTotal.toLocaleString()}件</span>
-            <span className="num text-xs font-semibold"
-              style={{ color: change >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+            <span className="num text-xs text-muted">累計 {monthlyTotal.toLocaleString()}件</span>
+            <span className={`num text-xs font-semibold ${change >= 0 ? 'text-positive' : 'text-negative'}`}>
               {change >= 0 ? '+' : ''}{change}%
             </span>
           </div>
         </div>
         <div className="text-right">
-          <p className="num text-sm font-bold" style={{ color: 'var(--brand-gold)' }}>¥{earnings.toLocaleString()}</p>
-          <p className="num text-xs" style={{ color: 'var(--text-muted)' }}>売上 ¥{(currentWeek * clientRate).toLocaleString()}</p>
+          <p className="num text-sm font-bold text-gold">¥{earnings.toLocaleString()}</p>
+          <p className="num text-xs text-muted">売上 ¥{(currentWeek * clientRate).toLocaleString()}</p>
         </div>
       </div>
 
@@ -103,11 +97,11 @@ export function DriverCard({ player, currentWeek, change, monthlyTotal, badge }:
       <MiniChart data={weeklyData} trend={trend} id={player.name} />
 
       {/* AIアドバイス */}
-      <div className="p-3" style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)' }}>
-        <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{advice.summary}</p>
+      <div className="p-3 bg-elevated rounded-md">
+        <p className="text-xs font-medium text-secondary">{advice.summary}</p>
         <div className="flex items-start gap-1.5 mt-1.5">
-          <div className="w-0.5 h-full min-h-[16px] flex-shrink-0 rounded-full mt-0.5" style={{ background: 'var(--brand-crimson)' }} />
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{advice.action}</p>
+          <div className="w-0.5 h-full min-h-[16px] flex-shrink-0 rounded-full mt-0.5 bg-crimson" />
+          <p className="text-xs text-muted">{advice.action}</p>
         </div>
       </div>
 
@@ -118,11 +112,8 @@ export function DriverCard({ player, currentWeek, change, monthlyTotal, badge }:
             driverName: player.name,
             userId: player.userId,
           })}
-          className="flex-1 text-xs py-2.5 font-medium cursor-pointer transition-all"
+          className="flex-1 text-xs py-2.5 font-medium cursor-pointer transition-all rounded-md bg-elevated text-gold"
           style={{
-            borderRadius: 'var(--r-md)',
-            background: 'var(--bg-elevated)',
-            color: 'var(--brand-gold)',
             border: '1px solid rgba(212,164,55,0.3)',
             minHeight: '44px',
           }}
@@ -137,11 +128,9 @@ export function DriverCard({ player, currentWeek, change, monthlyTotal, badge }:
             userId: player.userId,
             context: advice.action,
           })}
-          className="flex-1 text-xs py-2.5 font-medium cursor-pointer transition-all"
+          className="flex-1 text-xs py-2.5 font-medium cursor-pointer transition-all rounded-md text-crimson"
           style={{
-            borderRadius: 'var(--r-md)',
             background: 'transparent',
-            color: 'var(--brand-crimson)',
             border: '1px solid rgba(200,16,46,0.3)',
             minHeight: '44px',
           }}

@@ -63,21 +63,16 @@ export function HighlightCards({ currentWeekTotal, overallChange, mvp, totalDeli
         <div className="card card-bar card-bar-crimson p-5">
           <p className="label mb-2">今週の配送件数</p>
           <div className="flex items-baseline gap-2">
-            <span className="num text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>{currentWeekTotal}</span>
-            <span className="text-base" style={{ color: 'var(--text-muted)' }}>件</span>
-            <span className="num text-xs font-semibold ml-auto px-2 py-0.5"
-              style={{
-                borderRadius: 'var(--r-sm)',
-                background: overallChange >= 0 ? 'var(--positive-soft)' : 'var(--negative-soft)',
-                color: overallChange >= 0 ? 'var(--positive)' : 'var(--negative)',
-              }}>
+            <span className="num text-4xl font-bold text-primary">{currentWeekTotal}</span>
+            <span className="text-base text-muted">件</span>
+            <span className={`num text-xs font-semibold ml-auto px-2 py-0.5 rounded-sm ${overallChange >= 0 ? 'bg-positive-soft text-positive' : 'bg-negative-soft text-negative'}`}>
               {overallChange >= 0 ? '+' : ''}{overallChange}%
             </span>
           </div>
           <div className="mt-2"><Sparkline data={weeklyTotals} color="#C8102E" /></div>
-          <div className="flex gap-4 mt-2 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>月計 <span className="num font-semibold" style={{ color: 'var(--text-primary)' }}>{totalDeliveries}</span></span>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>稼働 <span className="num font-semibold" style={{ color: 'var(--text-primary)' }}>{PLAYERS.length}名</span></span>
+          <div className="flex gap-4 mt-2 pt-2 border-t border-t-border-subtle">
+            <span className="text-xs text-muted">月計 <span className="num font-semibold text-primary">{totalDeliveries}</span></span>
+            <span className="text-xs text-muted">稼働 <span className="num font-semibold text-primary">{PLAYERS.length}名</span></span>
           </div>
         </div>
 
@@ -85,11 +80,11 @@ export function HighlightCards({ currentWeekTotal, overallChange, mvp, totalDeli
         <div className="card card-bar card-bar-gold p-5">
           <p className="label mb-2">今週の売上</p>
           <div className="flex items-baseline gap-1">
-            <span className="num text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{formatYen(weeklyRevenue)}</span>
+            <span className="num text-3xl font-bold text-primary">{formatYen(weeklyRevenue)}</span>
           </div>
-          <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>月間売上 </span>
-            <span className="num text-sm font-bold" style={{ color: 'var(--brand-gold)' }}>{formatYen(monthlyRevenue)}</span>
+          <div className="mt-3 pt-2 border-t border-t-border-subtle">
+            <span className="text-xs text-muted">月間売上 </span>
+            <span className="num text-sm font-bold text-gold">{formatYen(monthlyRevenue)}</span>
           </div>
         </div>
 
@@ -97,12 +92,12 @@ export function HighlightCards({ currentWeekTotal, overallChange, mvp, totalDeli
         <div className="card p-5" style={{ borderColor: 'rgba(16,185,129,0.2)' }}>
           <p className="label mb-2">今週の粗利</p>
           <div className="flex items-baseline gap-1">
-            <span className="num text-3xl font-bold" style={{ color: 'var(--positive)' }}>{formatYen(weeklyProfit)}</span>
+            <span className="num text-3xl font-bold text-positive">{formatYen(weeklyProfit)}</span>
           </div>
-          <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>月間粗利 </span>
-            <span className="num text-sm font-bold" style={{ color: 'var(--positive)' }}>{formatYen(monthlyProfit)}</span>
-            <span className="text-xs ml-2" style={{ color: 'var(--text-disabled)' }}>利益率 {profitMargin ?? 11.1}%</span>
+          <div className="mt-3 pt-2 border-t border-t-border-subtle">
+            <span className="text-xs text-muted">月間粗利 </span>
+            <span className="num text-sm font-bold text-positive">{formatYen(monthlyProfit)}</span>
+            <span className="text-xs ml-2 text-disabled">利益率 {profitMargin ?? 11.1}%</span>
           </div>
         </div>
       </div>
@@ -112,13 +107,13 @@ export function HighlightCards({ currentWeekTotal, overallChange, mvp, totalDeli
         <div className="card card-bar card-bar-gold p-4">
           <p className="label mb-2">今週のMVP</p>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center text-base font-bold" style={{ borderRadius: 'var(--r-md)', background: 'var(--brand-gold-soft)', border: '1px solid var(--brand-gold)', color: 'var(--brand-gold)' }}>
+            <div className="w-10 h-10 flex items-center justify-center text-base font-bold rounded-md bg-gold-soft border border-gold text-gold">
               {mvp.name.charAt(0)}
             </div>
             <div className="flex-1">
-              <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{mvp.name}</p>
-              <span className="num text-xs" style={{ color: 'var(--text-secondary)' }}>{mvp.currentWeek}件</span>
-              <span className="num text-xs font-semibold ml-2" style={{ color: 'var(--positive)' }}>+{mvp.change}%</span>
+              <p className="text-lg font-bold text-primary">{mvp.name}</p>
+              <span className="num text-xs text-secondary">{mvp.currentWeek}件</span>
+              <span className="num text-xs font-semibold ml-2 text-positive">+{mvp.change}%</span>
             </div>
             <Sparkline data={mvpData} color="#D4A437" width={56} height={24} />
           </div>
@@ -128,22 +123,22 @@ export function HighlightCards({ currentWeekTotal, overallChange, mvp, totalDeli
           <p className="label mb-2">要フォロー</p>
           {needsAttention.length > 0 ? (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center" style={{ borderRadius: 'var(--r-md)', background: 'var(--negative-soft)' }}>
+              <div className="w-10 h-10 flex items-center justify-center rounded-md bg-negative-soft">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 6v4m0 4h.01M3 17h14L10 3 3 17z" stroke="var(--negative)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <div>
-                <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{needsAttention[0].name}</p>
-                <p className="text-xs" style={{ color: 'var(--negative)' }}>前週比 <span className="num font-semibold">{needsAttention[0].change}%</span></p>
+                <p className="text-lg font-bold text-primary">{needsAttention[0].name}</p>
+                <p className="text-xs text-negative">前週比 <span className="num font-semibold">{needsAttention[0].change}%</span></p>
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center" style={{ borderRadius: 'var(--r-md)', background: 'var(--positive-soft)' }}>
+              <div className="w-10 h-10 flex items-center justify-center rounded-md bg-positive-soft">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-6" stroke="var(--positive)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <div>
-                <p className="text-base font-semibold" style={{ color: 'var(--positive)' }}>全員好調</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>フォロー対象なし</p>
+                <p className="text-base font-semibold text-positive">全員好調</p>
+                <p className="text-xs text-muted">フォロー対象なし</p>
               </div>
             </div>
           )}

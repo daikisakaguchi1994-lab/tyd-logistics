@@ -28,27 +28,27 @@ export default function FinancePage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>売上管理</h1>
-        <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>売上・人件費・粗利の推移と内訳</p>
+        <h1 className="text-lg font-bold text-primary">売上管理</h1>
+        <p className="text-xs mt-1 text-muted">売上・人件費・粗利の推移と内訳</p>
       </div>
 
       {/* KPIカード */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="card p-4">
           <p className="label mb-1">月間売上</p>
-          <p className="num text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{formatYen(monthlyRevenue)}</p>
+          <p className="num text-2xl font-bold text-primary">{formatYen(monthlyRevenue)}</p>
         </div>
         <div className="card p-4">
           <p className="label mb-1">月間人件費</p>
-          <p className="num text-2xl font-bold" style={{ color: 'var(--brand-crimson)' }}>{formatYen(monthlyLabor)}</p>
+          <p className="num text-2xl font-bold text-crimson">{formatYen(monthlyLabor)}</p>
         </div>
         <div className="card p-4">
           <p className="label mb-1">月間粗利</p>
-          <p className="num text-2xl font-bold" style={{ color: 'var(--positive)' }}>{formatYen(monthlyProfit)}</p>
+          <p className="num text-2xl font-bold text-positive">{formatYen(monthlyProfit)}</p>
         </div>
         <div className="card p-4">
           <p className="label mb-1">粗利率</p>
-          <p className="num text-2xl font-bold" style={{ color: 'var(--brand-gold)' }}>{profitMarginPct}%</p>
+          <p className="num text-2xl font-bold text-gold">{profitMarginPct}%</p>
         </div>
       </div>
 

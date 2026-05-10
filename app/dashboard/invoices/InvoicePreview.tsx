@@ -6,9 +6,9 @@ export function InvoicePreview({ invoice, onClose }: { invoice: InvoiceData; onC
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl"
         onClick={e => e.stopPropagation()}
-        style={{ background: '#fff', borderRadius: 'var(--r-xl)', boxShadow: 'var(--shadow-elevated)' }}>
+        style={{ background: '#fff', boxShadow: 'var(--shadow-elevated)' }}>
 
         <div id="invoice-print" className="p-8" style={{ color: '#111', fontFamily: 'sans-serif' }}>
           <div className="flex justify-between items-start mb-8">
@@ -93,8 +93,8 @@ export function InvoicePreview({ invoice, onClose }: { invoice: InvoiceData; onC
         </div>
 
         <div className="flex justify-end gap-3 px-8 py-4" style={{ borderTop: '1px solid #eee' }}>
-          <button onClick={onClose} className="text-sm px-4 py-2 cursor-pointer"
-            style={{ background: '#f0f0f0', color: '#333', border: 'none', borderRadius: '6px' }}>
+          <button onClick={onClose} className="text-sm px-4 py-2 cursor-pointer border-0"
+            style={{ background: '#f0f0f0', color: '#333', borderRadius: '6px' }}>
             閉じる
           </button>
           <button
@@ -117,8 +117,8 @@ export function InvoicePreview({ invoice, onClose }: { invoice: InvoiceData; onC
               w.document.close();
               w.print();
             }}
-            className="text-sm px-4 py-2 font-semibold cursor-pointer"
-            style={{ background: 'var(--brand-crimson)', color: '#fff', border: 'none', borderRadius: '6px' }}>
+            className="text-sm px-4 py-2 font-semibold cursor-pointer bg-crimson border-0"
+            style={{ color: '#fff', borderRadius: '6px' }}>
             印刷 / PDF保存
           </button>
         </div>

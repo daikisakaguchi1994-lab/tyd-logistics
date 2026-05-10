@@ -3,25 +3,10 @@
 import { useState } from 'react';
 import { useRates } from '@/components/RateContext';
 import { PLAYERS, WEEKLY_DATA } from '@/src/mockData';
+import { formatYen } from '@/lib/utils';
+import { Signal } from '@/components/ui';
 
 type ReportType = 'weekly' | 'monthly';
-
-function formatYen(n: number): string {
-  if (Math.abs(n) >= 100000000) return `¥${(n / 100000000).toFixed(2)}億`;
-  if (Math.abs(n) >= 10000) return `¥${(n / 10000).toFixed(1)}万`;
-  return `¥${n.toLocaleString()}`;
-}
-
-function Signal({ value }: { value: number }) {
-  const color = value >= 5 ? '#10B981' : value >= 0 ? '#F59E0B' : '#EF4444';
-  const bg = value >= 5 ? 'rgba(16,185,129,0.12)' : value >= 0 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
-  const arrow = value > 0 ? '↑' : value < 0 ? '↓' : '→';
-  return (
-    <span className="num text-xs font-semibold px-1.5 py-0.5 inline-flex items-center gap-0.5" style={{ borderRadius: '4px', background: bg, color }}>
-      {arrow} {Math.abs(value)}%
-    </span>
-  );
-}
 
 // Stripe/Square 風 KPI ゲージ
 function ProfitGauge({ rate }: { rate: number }) {

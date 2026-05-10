@@ -1,10 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { THRESHOLDS } from '../config';
 
 const client = new Anthropic();
 
 export async function generateEmpatheticReply(message: string): Promise<string> {
   const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: THRESHOLDS.aiModel,
     max_tokens: 256,
     system: `あなたはTYDロジスティクスの管理アシスタントです。
 従業員から体調不良・欠勤・トラブルの連絡を受けました。
@@ -19,7 +20,7 @@ export async function generateEmpatheticReply(message: string): Promise<string> 
 
 export async function classifyWithAI(message: string): Promise<string> {
   const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: THRESHOLDS.aiModel,
     max_tokens: 32,
     system: `ユーザーのメッセージを以下のカテゴリに分類してください。カテゴリ名だけを返してください。
 - daily_report: 配送件数の報告
@@ -36,7 +37,7 @@ export async function classifyWithAI(message: string): Promise<string> {
 
 export async function generateEncouragement(driverName: string, context: string): Promise<string> {
   const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: THRESHOLDS.aiModel,
     max_tokens: 128,
     system: `あなたはTYDロジスティクスの管理者です。
 ドライバーへの簡潔な激励・声かけメッセージを生成してください。

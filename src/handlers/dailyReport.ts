@@ -1,6 +1,10 @@
 import type { HandlerContext } from '../types';
 import { appendRow, updateRow, nowJST, readSheet } from '../services/sheets';
 import { replyText } from '../services/line';
+import { createLogger } from '@/lib/logger';
+import { SHEET_NAMES } from '../config';
+
+const log = createLogger('handler:dailyReport');
 
 const CORRECTION_KEYWORDS = /訂正|修正|間違|まちがい|すいません|すみません|ごめん|やり直/;
 
@@ -22,13 +26,11 @@ export async function handleDailyReport(ctx: HandlerContext) {
 
   if (isCorrection) {
     try {
-      const rows = await readSheet('日報', 'A:E');
-      // 当日・同ユーザーの最新行を探す（後ろから検索）
+      const rows = await readSheet(SHEET_NAMES.dailyReport, 'A:E');
       for (let i = rows.length - 1; i >= 1; i--) {
         if (rows[i][2] === ctx.userId && rows[i][0] && isTodayJST(rows[i][0])) {
           oldCount = parseInt(rows[i][3], 10) || 0;
-          // 既存行を上書き（行番号 = i + 1 ※ヘッダー含むので sheets の行番号と一致）
-          await updateRow('日報', i + 1, [
+          await updateRow(SHEET_NAMES.dailyReport, i + 1, [
             nowJST(),
             ctx.displayName,
             ctx.userId,
@@ -36,28 +38,30 @@ export async function handleDailyReport(ctx: HandlerContext) {
             `${ctx.text}（訂正前: ${oldCount}件）`,
           ]);
           corrected = true;
+          log.info('Corrected daily report', { userId: ctx.userId, oldCount, newCount: count });
           break;
         }
       }
-    } catch {
-      // 読み取り失敗時は新規追加にフォールバック
+    } catch (err) {
+      log.error('Failed to read sheet for correction, falling back to append', err);
     }
   }
 
   if (!corrected) {
-    await appendRow('日報', [
+    await appendRow(SHEET_NAMES.dailyReport, [
       nowJST(),
       ctx.displayName,
       ctx.userId,
       count,
       ctx.text,
     ]);
+    log.info('Appended daily report', { userId: ctx.userId, count });
   }
 
-  // 今月の累計を計算（シートの全行を集計）
+  // 今月の累計
   let monthlyTotal = 0;
   try {
-    const rows = await readSheet('日報', 'A:D');
+    const rows = await readSheet(SHEET_NAMES.dailyReport, 'A:D');
     const now = new Date();
     const todayJST = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
     const currentMonth = todayJST.getMonth();
@@ -70,7 +74,8 @@ export async function handleDailyReport(ctx: HandlerContext) {
         }
       }
     }
-  } catch {
+  } catch (err) {
+    log.error('Failed to calculate monthly total', err);
     monthlyTotal = count;
   }
 

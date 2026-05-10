@@ -24,6 +24,14 @@ export interface HandlerContext {
 // ============================================================
 
 // --- ① ドライバー基本情報 ---
+export interface DriverBankAccount {
+  bankName: string;        // 銀行名
+  branchName: string;      // 支店名
+  accountType: string;     // 普通, 当座
+  accountNumber: string;   // 口座番号
+  accountHolder: string;   // 口座名義（カタカナ）
+}
+
 export interface DriverPersonalInfo {
   driverName: string;
   phone: string;
@@ -32,6 +40,7 @@ export interface DriverPersonalInfo {
   birthDate: string;       // YYYY-MM-DD
   joinDate: string;        // YYYY-MM-DD
   contractType: string;    // 業務委託, 正社員, パート
+  bankAccount: DriverBankAccount;
   emergencyContact: DriverEmergencyContact;
   notes: string;
 }

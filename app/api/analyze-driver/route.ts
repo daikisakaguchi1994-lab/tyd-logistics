@@ -1,6 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { rateLimit, getClientIP } from '@/lib/apiAuth';
+import { apiOk, apiBadRequest, apiServerError } from '@/lib/apiResponse';
+import { createLogger } from '@/lib/logger';
+import { THRESHOLDS } from '@/src/config';
 
+const log = createLogger('api:analyze-driver');
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 interface WeekData {
@@ -8,7 +13,11 @@ interface WeekData {
   count: number;
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // レート制限: 1分に3回まで（Claude API max_tokens=1024 のため厳しめ）
+  const limited = rateLimit(`analyze:${getClientIP(request)}`, 3, 60_000);
+  if (limited) return limited;
+
   try {
     const body = await request.json();
     const {
@@ -17,9 +26,13 @@ export async function POST(request: Request) {
       bestWeek, worstWeek, totalDeliveries, recentWeeks,
     } = body;
 
+    if (!driverName || typeof driverName !== 'string') {
+      return apiBadRequest('driverName is required');
+    }
+
     const weeklyTrend = (recentWeeks as WeekData[])
-      .map((w: WeekData) => `${w.week}: ${w.count}件`)
-      .join(', ');
+      ?.map((w: WeekData) => `${w.week}: ${w.count}件`)
+      .join(', ') || '';
 
     const prompt = `あなたは運送会社の管理者向けAIアドバイザーです。以下のドライバーのデータを分析し、JSON形式で結果を返してください。
 
@@ -55,7 +68,7 @@ export async function POST(request: Request) {
 }`;
 
     const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+      model: THRESHOLDS.aiModel,
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     });
@@ -65,18 +78,9 @@ export async function POST(request: Request) {
     if (!jsonMatch) throw new Error('No JSON in response');
 
     const analysis = JSON.parse(jsonMatch[0]);
-    return NextResponse.json({ analysis });
+    return apiOk({ analysis });
   } catch (error) {
-    console.error('Analysis error:', error);
-    return NextResponse.json({
-      analysis: {
-        performance: '分析データの取得に一時的な問題が発生しました。',
-        trend: 'データ不足のため判定保留。',
-        workPattern: '稼働パターンの詳細分析には追加データが必要です。',
-        teamComparison: 'チーム比較は現在利用できません。',
-        communication: '定期的な声かけと1on1ミーティングを推奨します。',
-        suggestedMessage: `${(await request.clone().json().catch(() => ({ driverName: '' }))).driverName || ''}さん、いつもお疲れさまです！引き続きよろしくお願いします。`,
-      },
-    }, { status: 200 });
+    log.error('Analysis failed', error);
+    return apiServerError('AI分析に失敗しました。しばらく待ってからお試しください。');
   }
 }

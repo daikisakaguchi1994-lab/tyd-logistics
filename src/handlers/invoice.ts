@@ -1,11 +1,15 @@
 import type { HandlerContext } from '../types';
 import { appendRow, nowJST, getNextDocNumber, readSheet } from '../services/sheets';
 import { replyText, pushMessage } from '../services/line';
+import { generateInvoiceToken } from '@/lib/apiAuth';
+import { createLogger } from '@/lib/logger';
+import { SHEET_NAMES, RATES } from '../config';
+
+const log = createLogger('handler:invoice');
 
 // 管理者のuserId（環境変数で設定）
 const ADMIN_USER_ID = () => process.env.ADMIN_LINE_USER_ID || '';
 
-// アプリの公開URL（Vercelドメイン or カスタムドメイン）
 function getAppUrl(): string {
   if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
@@ -13,14 +17,11 @@ function getAppUrl(): string {
   return 'http://localhost:3000';
 }
 
-// ドライバーごとの単価（環境変数 or デフォルト160円）
-const DEFAULT_DRIVER_RATE = 160;
-
 function getDriverRate(driverName: string): number {
   const envKey = `DRIVER_RATE_${driverName}`;
   const envVal = process.env[envKey];
   if (envVal) return parseInt(envVal, 10);
-  return parseInt(process.env.DEFAULT_DRIVER_RATE || '', 10) || DEFAULT_DRIVER_RATE;
+  return RATES.defaultDriverRate;
 }
 
 // 月次請求キーワード判定
@@ -42,7 +43,7 @@ function getTargetMonth(text: string): { year: number; month: number; label: str
 // Google Sheetsの日報から配送件数を集計
 async function getMonthlyDeliveryCount(userId: string, year: number, month: number): Promise<number> {
   try {
-    const rows = await readSheet('日報', 'A:D');
+    const rows = await readSheet(SHEET_NAMES.dailyReport, 'A:D');
     let total = 0;
     for (const row of rows.slice(1)) {
       if (row[2] === userId && row[0]) {
@@ -77,13 +78,15 @@ export async function handleInvoice(ctx: HandlerContext) {
 
     const rate = getDriverRate(ctx.displayName);
     const subtotal = count * rate;
-    const tax = Math.floor(subtotal * 0.1);
+    const taxRate = /軽減税率|8%|8％/.test(ctx.text) ? RATES.taxRateReduced : RATES.taxRateStandard;
+    const taxPercent = Math.round(taxRate * 100);
+    const tax = Math.floor(subtotal * taxRate);
     const total = subtotal + tax;
 
-    const docNumber = await getNextDocNumber('請求書', 'PAY');
+    const docNumber = await getNextDocNumber(SHEET_NAMES.invoice, 'PAY');
 
     // Sheetsに記録
-    await appendRow('請求書', [
+    await appendRow(SHEET_NAMES.invoice, [
       docNumber,
       nowJST(),
       ctx.displayName,
@@ -97,8 +100,11 @@ export async function handleInvoice(ctx: HandlerContext) {
       tax,
     ]);
 
-    // PDF閲覧リンク
-    const invoiceUrl = `${baseUrl}/invoice/${docNumber}`;
+    log.info('Monthly invoice created', { docNumber, userId: ctx.userId, count, total });
+
+    // PDF閲覧リンク（HMAC署名付きトークン）
+    const invoiceToken = generateInvoiceToken(docNumber);
+    const invoiceUrl = `${baseUrl}/invoice/${encodeURIComponent(invoiceToken)}`;
 
     // ドライバーへ返信
     const invoiceMessage = [
@@ -115,7 +121,7 @@ export async function handleInvoice(ctx: HandlerContext) {
       `  配送業務報酬`,
       `  ${count.toLocaleString()}件 × ¥${rate} = ¥${subtotal.toLocaleString()}`,
       '',
-      `  消費税（10%）  ¥${tax.toLocaleString()}`,
+      `  消費税（${taxPercent}%）  ¥${tax.toLocaleString()}`,
       '━━━━━━━━━━━━━━━',
       `  ご請求額  ¥${total.toLocaleString()}`,
       '━━━━━━━━━━━━━━━',
@@ -178,12 +184,12 @@ export async function handleInvoice(ctx: HandlerContext) {
     return;
   }
 
-  const docNumber = await getNextDocNumber('請求書', 'INV');
+  const docNumber = await getNextDocNumber(SHEET_NAMES.invoice, 'INV');
   const date = (data.date as string) || nowJST().split(' ')[0];
   const amount = data.amount as number;
   const company = (data.company as string) || '（未指定）';
 
-  await appendRow('請求書', [
+  await appendRow(SHEET_NAMES.invoice, [
     docNumber,
     nowJST(),
     ctx.displayName,
@@ -193,7 +199,10 @@ export async function handleInvoice(ctx: HandlerContext) {
     company,
   ]);
 
-  const invoiceUrl = `${baseUrl}/invoice/${docNumber}`;
+  log.info('Manual invoice created', { docNumber, userId: ctx.userId, amount, company });
+
+  const manualToken = generateInvoiceToken(docNumber);
+  const invoiceUrl = `${baseUrl}/invoice/${encodeURIComponent(manualToken)}`;
 
   await replyText(
     ctx.replyToken,

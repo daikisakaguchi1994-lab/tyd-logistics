@@ -1,6 +1,18 @@
 import type { HandlerContext } from '../types';
 import { appendRow, nowJST, getNextDocNumber } from '../services/sheets';
 import { replyText } from '../services/line';
+import { generateInvoiceToken } from '@/lib/apiAuth';
+import { createLogger } from '@/lib/logger';
+import { SHEET_NAMES } from '../config';
+
+const log = createLogger('handler:receipt');
+
+function getAppUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return 'http://localhost:3000';
+}
 
 export async function handleReceipt(ctx: HandlerContext) {
   const data = ctx.classified.extractedData || {};
@@ -13,12 +25,12 @@ export async function handleReceipt(ctx: HandlerContext) {
     return;
   }
 
-  const docNumber = await getNextDocNumber('領収書', 'RCP');
+  const docNumber = await getNextDocNumber(SHEET_NAMES.receipt, 'RCP');
   const date = (data.date as string) || nowJST().split(' ')[0];
   const amount = data.amount as number;
   const company = (data.company as string) || '（未指定）';
 
-  await appendRow('領収書', [
+  await appendRow(SHEET_NAMES.receipt, [
     docNumber,
     nowJST(),
     ctx.displayName,
@@ -28,8 +40,25 @@ export async function handleReceipt(ctx: HandlerContext) {
     company,
   ]);
 
+  log.info('Receipt created', { docNumber, userId: ctx.userId, amount });
+
+  const receiptToken = generateInvoiceToken(docNumber);
+  const receiptUrl = `${getAppUrl()}/receipt/${encodeURIComponent(receiptToken)}`;
+
   await replyText(
     ctx.replyToken,
-    `領収書を作成しました\n\n  領収書番号：${docNumber}\n  日付：${date}\n  金額：¥${amount.toLocaleString()}\n  取引先：${company}\n\n領収書シートに記録済みです。`
+    [
+      `領収書を作成しました`,
+      '',
+      `  領収書番号：${docNumber}`,
+      `  日付：${date}`,
+      `  金額：¥${amount.toLocaleString()}`,
+      `  取引先：${company}`,
+      '',
+      '■ PDF領収書',
+      receiptUrl,
+      '',
+      '領収書シートに記録済みです。',
+    ].join('\n')
   );
 }

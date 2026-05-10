@@ -1,7 +1,10 @@
 import { messagingApi } from '@line/bot-sdk';
+import { validateEnv, env } from '@/lib/env';
+
+validateEnv();
 
 const client = new messagingApi.MessagingApiClient({
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN!,
+  channelAccessToken: env('LINE_CHANNEL_ACCESS_TOKEN'),
 });
 
 export async function replyText(replyToken: string, text: string) {

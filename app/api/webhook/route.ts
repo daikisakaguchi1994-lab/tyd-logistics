@@ -1,20 +1,31 @@
 import crypto from 'crypto';
+import { NextRequest } from 'next/server';
 import { classify } from '@/src/router';
 import { classifyWithAI } from '@/src/services/claude';
 import { replyText, getDisplayName } from '@/src/services/line';
-import { handleDailyReport } from '@/src/handlers/dailyReport';
-import { handleAbsence } from '@/src/handlers/absence';
-import { handleJobInquiry } from '@/src/handlers/jobInquiry';
-import { handleInvoice } from '@/src/handlers/invoice';
-import { handleReceipt } from '@/src/handlers/receipt';
+import { getHandler, VALID_SCENARIOS } from '@/src/handlers';
+import { rateLimit, getClientIP } from '@/lib/apiAuth';
+import { createLogger } from '@/lib/logger';
+import { validateEnv, env } from '@/lib/env';
+import { THRESHOLDS } from '@/src/config';
 import type { HandlerContext, Scenario } from '@/src/types';
+
+validateEnv();
+
+const log = createLogger('webhook');
 
 function verifySignature(body: string, signature: string): boolean {
   const hash = crypto
-    .createHmac('SHA256', process.env.LINE_CHANNEL_SECRET!)
+    .createHmac('SHA256', env('LINE_CHANNEL_SECRET'))
     .update(body)
     .digest('base64');
-  return hash === signature;
+
+  // タイミング攻撃防止
+  try {
+    return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(signature));
+  } catch {
+    return false;
+  }
 }
 
 const HELP_MESSAGE = `TYD管理Botです。以下のコマンドが使えます：
@@ -30,20 +41,29 @@ const HELP_MESSAGE = `TYD管理Botです。以下のコマンドが使えます�
 
   「領収書 5/15 15万円 ABC商事」→ 領収書作成`;
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const limited = rateLimit(`webhook:${getClientIP(request)}`, 50, 1_000);
+  if (limited) return new Response('Too many requests', { status: 429 });
+
   const rawBody = await request.text();
   const signature = request.headers.get('x-line-signature') || '';
 
   if (!verifySignature(rawBody, signature)) {
+    log.warn('Invalid LINE signature');
     return new Response('Invalid signature', { status: 401 });
   }
 
-  const body = JSON.parse(rawBody);
+  let body;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    log.warn('Invalid JSON body');
+    return new Response('Invalid JSON', { status: 400 });
+  }
   const events = body.events || [];
 
   for (const event of events) {
     if (event.type !== 'message' || event.message.type !== 'text') {
-      // Non-text messages: friendly response
       if (event.type === 'message' && event.replyToken) {
         await replyText(event.replyToken, 'テキストメッセージでお願いします！');
       }
@@ -58,49 +78,42 @@ export async function POST(request: Request) {
       const displayName = await getDisplayName(userId);
       let classified = classify(text);
 
+      log.info('Message classified', { userId, scenario: classified.scenario, method: 'regex' });
+
       // If unknown, try Claude classification
       if (classified.scenario === 'unknown') {
         try {
           const aiResult = await Promise.race([
             classifyWithAI(text),
-            new Promise<string>((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000)),
+            new Promise<string>((_, reject) =>
+              setTimeout(() => reject(new Error('timeout')), THRESHOLDS.aiTimeoutMs)
+            ),
           ]);
-          const validScenarios: Scenario[] = ['daily_report', 'absence', 'job_inquiry', 'invoice', 'receipt'];
-          if (validScenarios.includes(aiResult as Scenario)) {
+          if (VALID_SCENARIOS.includes(aiResult as Scenario)) {
             classified = { scenario: aiResult as Scenario };
+            log.info('AI reclassified', { userId, scenario: classified.scenario });
           }
-        } catch {
-          // Claude timeout or error, stay unknown
+        } catch (err) {
+          log.warn('AI classification failed, staying unknown', err instanceof Error ? { error: err.message } : undefined);
         }
       }
 
       const ctx: HandlerContext = { replyToken, userId, displayName, text, classified };
 
-      switch (classified.scenario) {
-        case 'daily_report':
-          await handleDailyReport(ctx);
-          break;
-        case 'absence':
-          await handleAbsence(ctx);
-          break;
-        case 'job_inquiry':
-          await handleJobInquiry(ctx);
-          break;
-        case 'invoice':
-          await handleInvoice(ctx);
-          break;
-        case 'receipt':
-          await handleReceipt(ctx);
-          break;
-        default:
-          await replyText(replyToken, HELP_MESSAGE);
+      const handler = getHandler(classified.scenario);
+      if (handler) {
+        await handler(ctx);
+        log.info('Handler completed', { scenario: classified.scenario, userId });
+      } else {
+        await replyText(replyToken, HELP_MESSAGE);
+        log.info('Sent help message', { userId });
       }
     } catch (error) {
-      console.error('Handler error:', error);
+      log.error('Handler failed', error, { userId, text: text.slice(0, 50) });
       try {
         await replyText(replyToken, 'システムエラーが発生しました。もう一度お試しください。');
       } catch {
-        // If even the error reply fails, nothing we can do
+        // reply itself failed
       }
     }
   }

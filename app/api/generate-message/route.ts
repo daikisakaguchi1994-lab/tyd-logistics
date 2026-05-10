@@ -1,21 +1,27 @@
+import { NextRequest } from 'next/server';
 import { generateEncouragement } from '@/src/services/claude';
+import { rateLimit, getClientIP } from '@/lib/apiAuth';
+import { apiOk, apiBadRequest, apiServerError } from '@/lib/apiResponse';
+import { createLogger } from '@/lib/logger';
 
-export async function POST(request: Request) {
+const log = createLogger('api:generate-message');
+
+export async function POST(request: NextRequest) {
+  // レート制限: 1分に5回まで（Claude APIコスト保護）
+  const limited = rateLimit(`gen-msg:${getClientIP(request)}`, 5, 60_000);
+  if (limited) return limited;
+
   try {
     const { driverName, context } = await request.json();
 
-    if (!driverName) {
-      return Response.json({ error: 'driverName is required' }, { status: 400 });
+    if (!driverName || typeof driverName !== 'string') {
+      return apiBadRequest('driverName is required');
     }
 
     const message = await generateEncouragement(driverName, context || '');
-    return Response.json({ message });
+    return apiOk({ message });
   } catch (error) {
-    console.error('Generate message error:', error);
-    // フォールバック: APIエラー時もメッセージを返す
-    const name = (await request.clone().json().catch(() => ({}))).driverName || '';
-    return Response.json({
-      message: `${name}さん、いつもお疲れさまです！引き続きよろしくお願いします。`,
-    });
+    log.error('Generate message failed', error);
+    return apiServerError('メッセージの生成に失敗しました。しばらく待ってからお試しください。');
   }
 }

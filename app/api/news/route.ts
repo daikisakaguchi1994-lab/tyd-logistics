@@ -1,5 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import Parser from 'rss-parser';
+import { rateLimit, getClientIP } from '@/lib/apiAuth';
+import { apiOk } from '@/lib/apiResponse';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('api:news');
 
 const parser = new Parser();
 
@@ -21,11 +26,15 @@ let cachedNews: NewsItem[] = [];
 let cacheTime = 0;
 const CACHE_DURATION = 30 * 60 * 1000; // 30分
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // レート制限: 1分に20回まで
+  const limited = rateLimit(`news:${getClientIP(req)}`, 20, 60_000);
+  if (limited) return limited;
+
   const now = Date.now();
 
   if (cachedNews.length > 0 && now - cacheTime < CACHE_DURATION) {
-    return NextResponse.json({ news: cachedNews });
+    return apiOk({ news: cachedNews });
   }
 
   try {
@@ -46,9 +55,9 @@ export async function GET() {
     cachedNews = allItems;
     cacheTime = now;
 
-    return NextResponse.json({ news: allItems });
+    return apiOk({ news: allItems });
   } catch (error) {
-    console.error('News fetch error:', error);
-    return NextResponse.json({ news: cachedNews.length > 0 ? cachedNews : [] });
+    log.error('News fetch failed', error);
+    return apiOk({ news: cachedNews.length > 0 ? cachedNews : [] });
   }
 }

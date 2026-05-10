@@ -6,6 +6,34 @@
   --color-foreground: var(--text-primary);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+
+  /* Surface colors → bg-surface, bg-elevated */
+  --color-surface: var(--bg-surface);
+  --color-elevated: var(--bg-elevated);
+
+  /* Text colors → text-primary, text-secondary, text-muted, text-disabled */
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-disabled: var(--text-disabled);
+
+  /* Brand → text-crimson, bg-crimson, text-gold, bg-gold */
+  --color-crimson: var(--brand-crimson);
+  --color-crimson-soft: var(--brand-crimson-soft);
+  --color-gold: var(--brand-gold);
+  --color-gold-soft: var(--brand-gold-soft);
+
+  /* Semantic → text-positive, bg-positive-soft, etc. */
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+
+  /* Border → border-subtle, border-default */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
 }
 
 body {

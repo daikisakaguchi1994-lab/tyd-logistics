@@ -1,10 +1,32 @@
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { APP_CONFIG } from '@/src/config';
+import { rateLimit, getClientIP } from '@/lib/apiAuth';
+import { apiBadRequest, apiUnauthorized } from '@/lib/apiResponse';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('api:auth');
+
+/** タイミング攻撃を防ぐ定数時間パスワード比較 */
+function verifyPassword(input: string, expected: string): boolean {
+  const inputHash = crypto.createHash('sha256').update(input).digest();
+  const expectedHash = crypto.createHash('sha256').update(expected).digest();
+  return crypto.timingSafeEqual(inputHash, expectedHash);
+}
 
 export async function POST(req: NextRequest) {
+  // ブルートフォース対策: 同一IPから5分に5回まで
+  const limited = rateLimit(`auth:${getClientIP(req)}`, 5, 5 * 60_000);
+  if (limited) return limited;
+
   const { password } = await req.json();
 
-  if (password === APP_CONFIG.dashboardPassword) {
+  if (!password || typeof password !== 'string') {
+    return apiBadRequest('パスワードが必要です');
+  }
+
+  if (verifyPassword(password, APP_CONFIG.dashboardPassword)) {
+    log.info('Login success', { ip: getClientIP(req) });
     const res = NextResponse.json({ ok: true });
     res.cookies.set(APP_CONFIG.authCookieName, 'authenticated', {
       httpOnly: true,
@@ -16,7 +38,8 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  return NextResponse.json({ ok: false, error: 'パスワードが正しくありません' }, { status: 401 });
+  log.warn('Login failed', { ip: getClientIP(req) });
+  return apiUnauthorized('パスワードが正しくありません');
 }
 
 export async function DELETE() {

@@ -1,7 +1,9 @@
-// === 単価設定（デフォルト） ===
-export const DRIVER_RATE = 160;
-export const CLIENT_RATE = 180;
-export const MARGIN_RATE = 20;
+import { RATES } from './config';
+
+// Re-export from config for backward compatibility
+export const DRIVER_RATE = RATES.defaultDriverRate;
+export const CLIENT_RATE = RATES.clientRate;
+export const MARGIN_RATE = RATES.clientRate - RATES.defaultDriverRate;
 
 export interface PlayerProfile {
   name: string;

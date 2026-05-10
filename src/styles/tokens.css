@@ -1,0 +1,54 @@
+:root {
+  /* === Surface === */
+  --bg-base:        #0A0E1A;
+  --bg-surface:     #11162A;
+  --bg-elevated:    #1A2138;
+
+  /* === Border === */
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+
+  /* === Text === */
+  --text-primary:   #F5F5F7;
+  --text-secondary: #9CA3AF;
+  --text-muted:     #6B7280;
+  --text-disabled:  #4B5563;
+
+  /* === Brand === */
+  --brand-crimson:      #C8102E;
+  --brand-crimson-soft: rgba(200, 16, 46, 0.12);
+  --brand-gold:         #D4A437;
+  --brand-gold-soft:    rgba(212, 164, 55, 0.14);
+
+  /* === Semantic === */
+  --positive:      #10B981;
+  --positive-soft: rgba(16, 185, 129, 0.12);
+  --negative:      #EF4444;
+  --negative-soft: rgba(239, 68, 68, 0.12);
+  --warning:       #F59E0B;
+  --warning-soft:  rgba(245, 158, 11, 0.12);
+
+  /* === Chart Grayscale === */
+  --chart-gray-1: #374151;
+  --chart-gray-2: #4B5563;
+  --chart-gray-3: #6B7280;
+  --chart-gray-4: #9CA3AF;
+
+  /* === Radius === */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+
+  /* === Shadow === */
+  --shadow-card:     0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.32);
+  --shadow-elevated: 0 1px 0 rgba(255,255,255,0.06) inset, 0 16px 48px rgba(0,0,0,0.48);
+
+  /* === Easing === */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* === Spacing === */
+  --gap-sm: 16px;
+  --gap-md: 24px;
+}

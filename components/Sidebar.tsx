@@ -87,7 +87,10 @@ const NAV_ITEMS = [
   { href: '/dashboard/report', label: '経営レポート', icon: <IconReport /> },
 ];
 
-const RATE_OPTIONS = Array.from({ length: 9 }, (_, i) => 160 + i * 5);
+const inputStyle = {
+  background: 'var(--bg-surface)', color: 'var(--text-primary)',
+  border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
+};
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
@@ -165,38 +168,43 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               {/* 顧客請求単価 */}
               <div>
                 <label className="label block mb-1.5">顧客請求単価</label>
-                <select
-                  value={clientRate}
-                  onChange={e => setClientRate(Number(e.target.value))}
-                  className="w-full text-sm py-1.5 px-2 cursor-pointer"
-                  style={{
-                    background: 'var(--bg-surface)', color: 'var(--text-primary)',
-                    border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
-                  }}
-                >
-                  {RATE_OPTIONS.map(v => (
-                    <option key={`c-${v}`} value={v}>¥{v}/個</option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>¥</span>
+                  <input
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={clientRate}
+                    onChange={e => {
+                      const v = parseInt(e.target.value, 10);
+                      if (!isNaN(v) && v >= 1) setClientRate(v);
+                    }}
+                    className="w-full text-sm py-1.5 px-2 num"
+                    style={inputStyle}
+                  />
+                  <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>/件</span>
+                </div>
               </div>
 
               {/* 一括変更 */}
               <div>
                 <label className="label block mb-1.5">ドライバー報酬（一括）</label>
                 <div className="flex gap-2">
-                  <select
-                    value={bulkRate}
-                    onChange={e => setBulkRate(Number(e.target.value))}
-                    className="flex-1 text-sm py-1.5 px-2 cursor-pointer"
-                    style={{
-                      background: 'var(--bg-surface)', color: 'var(--text-primary)',
-                      border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
-                    }}
-                  >
-                    {RATE_OPTIONS.map(v => (
-                      <option key={`b-${v}`} value={v}>¥{v}</option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-1.5 flex-1">
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>¥</span>
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={bulkRate}
+                      onChange={e => {
+                        const v = parseInt(e.target.value, 10);
+                        if (!isNaN(v) && v >= 1) setBulkRate(v);
+                      }}
+                      className="w-full text-sm py-1.5 px-2 num"
+                      style={inputStyle}
+                    />
+                  </div>
                   <button
                     onClick={() => setAllDriverRates(bulkRate)}
                     className="text-xs px-2 py-1.5 cursor-pointer flex-shrink-0"
@@ -225,20 +233,25 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                         <span className="text-[10px]" style={{ color: 'var(--text-disabled)' }}>{p.character}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <select
-                          value={driverRates[p.name] ?? 160}
-                          onChange={e => setDriverRate(p.name, Number(e.target.value))}
-                          className="text-xs py-1 px-1.5 cursor-pointer flex-1"
-                          style={{
-                            background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                            border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
-                          }}
-                        >
-                          {RATE_OPTIONS.map(v => (
-                            <option key={`${p.name}-${v}`} value={v}>¥{v}/個</option>
-                          ))}
-                        </select>
-                        <span className="text-[10px] num font-semibold px-1.5 py-0.5" style={{
+                        <div className="flex items-center gap-1 flex-1">
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>¥</span>
+                          <input
+                            type="number"
+                            min={1}
+                            step={1}
+                            value={driverRates[p.name] ?? 160}
+                            onChange={e => {
+                              const v = parseInt(e.target.value, 10);
+                              if (!isNaN(v) && v >= 1) setDriverRate(p.name, v);
+                            }}
+                            className="w-full text-xs py-1 px-1.5 num"
+                            style={{
+                              background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+                              border: '1px solid var(--border-default)', borderRadius: 'var(--r-sm)', outline: 'none',
+                            }}
+                          />
+                        </div>
+                        <span className="text-[10px] num font-semibold px-1.5 py-0.5 flex-shrink-0" style={{
                           borderRadius: '4px',
                           background: getMargin(p.name) > 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
                           color: getMargin(p.name) > 0 ? 'var(--positive)' : 'var(--negative)',

@@ -26,8 +26,31 @@ export default function InvoicesPage() {
   const [direction, setDirection] = useState<InvoiceDirection>('to-partner');
   const [selectedPartner, setSelectedPartner] = useState(PARTNERS[0]?.id || '');
   const [selectedDriver, setSelectedDriver] = useState(PLAYERS[0]?.name || '');
-  const [weeksCount, setWeeksCount] = useState(4); // 何週間分
   const [preview, setPreview] = useState<InvoiceData | null>(null);
+
+  // デフォルト: 今月1日〜今日
+  const today = new Date();
+  const defaultStart = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`;
+  const defaultEnd = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const [periodStart, setPeriodStart] = useState(defaultStart);
+  const [periodEnd, setPeriodEnd] = useState(defaultEnd);
+
+  // 対象期間の表示ラベル
+  const periodLabel = (() => {
+    const s = new Date(periodStart);
+    const e = new Date(periodEnd);
+    return `${s.getFullYear()}年${s.getMonth() + 1}月${s.getDate()}日 〜 ${e.getFullYear()}年${e.getMonth() + 1}月${e.getDate()}日`;
+  })();
+
+  // 対象期間に含まれる週のデータを取得
+  const getWeeksInPeriod = () => {
+    // WEEKLY_DATAの週を期間でフィルタ（簡易: 全週を含める方式 → 将来はSheets実データから日単位集計）
+    const startDate = new Date(periodStart);
+    const endDate = new Date(periodEnd);
+    const diffDays = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+    const weeksCount = Math.max(1, Math.ceil(diffDays / 7));
+    return WEEKLY_DATA.slice(-weeksCount);
+  };
 
   // 対象ドライバー or パートナーに基づく請求書データ生成
   const generateInvoice = (): InvoiceData => {
@@ -38,7 +61,7 @@ export default function InvoicesPage() {
     due.setDate(0); // 翌月末
     const dueDate = formatDate(due);
 
-    const recentWeeks = WEEKLY_DATA.slice(-weeksCount);
+    const recentWeeks = getWeeksInPeriod();
 
     if (direction === 'to-partner') {
       // パートナーへの請求（全ドライバー分の配送実績）
@@ -47,7 +70,7 @@ export default function InvoicesPage() {
         const qty = recentWeeks.reduce((s, w) => s + (w[p.name] as number), 0);
         const rate = partner.billingRate;
         return {
-          description: `配送業務（${p.name}）${weeksCount}週間分`,
+          description: `配送業務（${p.name}）`,
           quantity: qty,
           unitPrice: rate,
           amount: qty * rate,
@@ -67,7 +90,7 @@ export default function InvoicesPage() {
         subtotal,
         tax,
         total: subtotal + tax,
-        notes: `対象期間: ${recentWeeks[0].week} 〜 ${recentWeeks[recentWeeks.length - 1].week}`,
+        notes: `対象期間: ${periodLabel}`,
       };
     } else {
       // ドライバーへの支払明細
@@ -75,7 +98,7 @@ export default function InvoicesPage() {
       const rate = driverRates[driver.name] ?? 160;
       const qty = recentWeeks.reduce((s, w) => s + (w[driver.name] as number), 0);
       const items: InvoiceItem[] = [{
-        description: `配送業務報酬（${weeksCount}週間分）`,
+        description: `配送業務報酬`,
         quantity: qty,
         unitPrice: rate,
         amount: qty * rate,
@@ -94,7 +117,7 @@ export default function InvoicesPage() {
         subtotal,
         tax,
         total: subtotal + tax,
-        notes: `対象期間: ${recentWeeks[0].week} 〜 ${recentWeeks[recentWeeks.length - 1].week}\n報酬単価: ¥${rate}/件`,
+        notes: `対象期間: ${periodLabel}\n報酬単価: ¥${rate}/件`,
       };
     }
   };
@@ -193,17 +216,24 @@ export default function InvoicesPage() {
           {/* 期間 */}
           <div>
             <label className="label block mb-2">対象期間</label>
-            <select value={weeksCount} onChange={e => setWeeksCount(Number(e.target.value))}
-              className="text-sm py-2.5 px-3 cursor-pointer"
-              style={{
-                background: 'var(--bg-elevated)', color: 'var(--text-primary)',
-                border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
-              }}>
-              <option value={1}>直近1週間</option>
-              <option value={2}>直近2週間</option>
-              <option value={4}>直近4週間（1ヶ月）</option>
-              <option value={8}>直近8週間（2ヶ月）</option>
-            </select>
+            <div className="flex items-center gap-2 flex-wrap">
+              <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)}
+                className="text-sm py-2.5 px-3"
+                style={{
+                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
+                  colorScheme: 'dark',
+                }} />
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>〜</span>
+              <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)}
+                className="text-sm py-2.5 px-3"
+                style={{
+                  background: 'var(--bg-elevated)', color: 'var(--text-primary)',
+                  border: '1px solid var(--border-default)', borderRadius: 'var(--r-md)', outline: 'none',
+                  colorScheme: 'dark',
+                }} />
+            </div>
+            <p className="text-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>{periodLabel}</p>
           </div>
 
           {/* プレビューサマリー */}
@@ -211,7 +241,7 @@ export default function InvoicesPage() {
             <h3 className="text-xs font-semibold mb-3" style={{ color: 'var(--text-secondary)' }}>概算</h3>
             {direction === 'to-partner' ? (() => {
               const partner = PARTNERS.find(p => p.id === selectedPartner)!;
-              const recentWeeks = WEEKLY_DATA.slice(-weeksCount);
+              const recentWeeks = getWeeksInPeriod();
               const total = PLAYERS.reduce((s, p) => s + recentWeeks.reduce((ws, w) => ws + (w[p.name] as number), 0), 0);
               const subtotal = total * partner.billingRate;
               return (
@@ -232,7 +262,7 @@ export default function InvoicesPage() {
               );
             })() : (() => {
               const rate = driverRates[selectedDriver] ?? 160;
-              const recentWeeks = WEEKLY_DATA.slice(-weeksCount);
+              const recentWeeks = getWeeksInPeriod();
               const qty = recentWeeks.reduce((s, w) => s + (w[selectedDriver] as number), 0);
               const subtotal = qty * rate;
               return (

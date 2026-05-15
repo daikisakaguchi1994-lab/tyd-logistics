@@ -56,7 +56,7 @@ export default function IncidentsPage() {
       const res = await fetch('/api/incidents');
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setItems(data.data.incidents);
+      setItems(data.incidents);
     } catch {
       setItems([]);
     } finally {

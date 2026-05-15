@@ -37,7 +37,7 @@ export default function RecruitmentPage() {
       const res = await fetch('/api/recruitment');
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setLeads(data.data.leads);
+      setLeads(data.leads);
     } catch {
       setLeads([]);
     } finally {

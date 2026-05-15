@@ -129,7 +129,7 @@ export default function DriversPage() {
       const res = await fetch('/api/drivers');
       if (!res.ok) throw new Error('取得に失敗しました');
       const data = await res.json();
-      setDrivers(data.data.drivers);
+      setDrivers(data.drivers);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : '取得に失敗しました');
     } finally {

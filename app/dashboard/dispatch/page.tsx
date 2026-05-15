@@ -52,7 +52,7 @@ export default function DispatchPage() {
       const res = await fetch('/api/dispatch');
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setDispatches(data.data.dispatches);
+      setDispatches(data.dispatches);
     } catch {
       setDispatches([]);
     } finally {

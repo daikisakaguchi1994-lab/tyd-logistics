@@ -33,7 +33,7 @@ export default function OutsourcePage() {
       const res = await fetch('/api/outsource');
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setItems(data.data.outsources);
+      setItems(data.outsources);
     } catch {
       setItems([]);
     } finally {

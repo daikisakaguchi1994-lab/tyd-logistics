@@ -113,7 +113,7 @@ export default function PartnersPage() {
       const res = await fetch('/api/partners');
       if (!res.ok) throw new Error('取得に失敗しました');
       const data = await res.json();
-      setPartners(data.data.partners);
+      setPartners(data.partners);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : '取得に失敗しました');
     } finally {

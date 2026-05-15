@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { MessageProvider } from '@/components/MessageContext';
 import { RateProvider } from '@/components/RateContext';
@@ -8,9 +8,12 @@ import { TickerBar } from '@/components/TickerBar';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dateStr, setDateStr] = useState('');
 
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  useEffect(() => {
+    const now = new Date();
+    setDateStr(`${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`);
+  }, []);
 
   return (
     <RateProvider>

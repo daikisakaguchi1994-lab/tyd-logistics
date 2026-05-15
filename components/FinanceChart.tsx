@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Bar } from 'recharts';
 import { WEEKLY_DATA, PLAYERS } from '@/src/mockData';
 import { useRates } from './RateContext';
@@ -11,6 +12,8 @@ function formatYen(n: number): string {
 
 export function FinanceChart() {
   const { clientRate, driverRates } = useRates();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const data = WEEKLY_DATA.map(week => {
     const revenue = PLAYERS.reduce((sum, p) => sum + (week[p.name] as number) * clientRate, 0);
@@ -22,6 +25,15 @@ export function FinanceChart() {
       profit: revenue - laborCost,
     };
   });
+
+  if (!mounted) {
+    return (
+      <div className="card p-5">
+        <h2 className="text-sm font-bold mb-4 text-primary">週次 売上・コスト・粗利</h2>
+        <div style={{ height: 280 }} />
+      </div>
+    );
+  }
 
   return (
     <div className="card p-5">
